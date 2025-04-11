@@ -30,7 +30,7 @@ export default function HomePage() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8 }}
       >
-        <span className='text-[30px]'>Welcome to</span><br /> <span className='text-re-500'>In-Parking</span>
+        <span className='text-[30px]'>Welcome to</span><br /> <span className='text-red-500'>In-Parking</span>
       </motion.h1>
 
       {!showInput && (
