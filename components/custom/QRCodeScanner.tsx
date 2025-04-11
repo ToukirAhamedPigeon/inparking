@@ -11,17 +11,22 @@ const QrScanner = ({ onScan }: QrScannerProps) => {
   const scannerRef = useRef<Html5Qrcode | null>(null)
   const qrRegionId = "qr-reader"
   const isScanningRef = useRef(false)
+  const qrRegionRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const startScanner = async () => {
       try {
         const devices = await Html5Qrcode.getCameras()
+        console.log("Available cameras:", devices)
+
         const backCamera =
           devices.find(device =>
             device.label.toLowerCase().includes("back") ||
             device.label.toLowerCase().includes("rear") ||
             device.label.toLowerCase().includes("environment")
           ) || devices[0]
+
+        console.log("Using camera:", backCamera)
 
         if (!backCamera) throw new Error("No camera found")
 
@@ -41,7 +46,7 @@ const QrScanner = ({ onScan }: QrScannerProps) => {
             }
           },
           (errorMessage) => {
-            // handle scan errors silently or log
+            console.error("Scanning error:", errorMessage)
           }
         )
       } catch (error) {
@@ -49,8 +54,8 @@ const QrScanner = ({ onScan }: QrScannerProps) => {
       }
     }
 
-    const el = document.getElementById(qrRegionId)
-    if (el) {
+    // Check if qrRegionRef is mounted before calling startScanner
+    if (qrRegionRef.current) {
       startScanner()
     }
 
@@ -71,9 +76,14 @@ const QrScanner = ({ onScan }: QrScannerProps) => {
 
   return (
     <div
+      ref={qrRegionRef}
       id={qrRegionId}
-      className="w-full max-w-md h-64 rounded-xl shadow-xl bg-cover bg-center"
-      style={{ backgroundImage: 'url("/assets/qr_scan_back.jpg")' }}
+      className="w-full max-w-md rounded-xl shadow-xl overflow-hidden"
+      style={{
+        height: '250px',
+        position: 'relative',
+        background: 'black',  // Set background to black, no image overlay.
+      }}
     />
   )
 }
