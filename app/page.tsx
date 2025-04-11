@@ -46,7 +46,7 @@ export default function HomePage() {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3, duration: 1.2, ease: "easeInOut" }}
       >
-        Smart, secure, and efficient indoor car parking guiding system. Navigate your lot with ease.
+        Smart, secure, and efficient indoor car parking guidance. Navigate your lot with ease.
       </motion.p>
 
       <motion.div
