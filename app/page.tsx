@@ -6,6 +6,7 @@ import { useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { useMediaQuery } from 'usehooks-ts'
 import { Input } from "@/components/ui/input"
+import QRCodeScanner from '@/components/custom/QRCodeScanner'
 
 export default function HomePage() {
   const inputRef = useRef<HTMLDivElement>(null)
@@ -87,9 +88,7 @@ export default function HomePage() {
             {!isDesktop && (
               <div className="w-full text-center text-sm text-gray-500">
                 <p className="mb-2">Scan QR Code to Find Your Spot</p>
-                <div className="w-full h-40 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
-                  [ QR Scanner Placeholder ]
-                </div>
+                <QRCodeScanner />
               </div>
             )}
 
