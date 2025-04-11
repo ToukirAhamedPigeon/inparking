@@ -114,7 +114,7 @@ export default function HomePage() {
               )}
 
               <div className="w-full">
-                <label className="block text-gray-700 font-semibold mb-2 text-center">
+                <label className="block text-gray-700 font-semibold mb-2">
                   {isDesktop ? 'Enter QR Code Number' : 'Or enter QR Code Number'}
                 </label>
                 <Input
