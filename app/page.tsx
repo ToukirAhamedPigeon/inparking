@@ -27,10 +27,10 @@ export default function HomePage() {
         timeoutIds.push(setTimeout(() => {
           const grayLetters = indoorLetters.slice(0, i + 1).map(c => `<span class='text-gray-500'>${c}</span>`).join('')
           setTitle(`In${grayLetters} Parking`)
-        }, 1500 + i * 300))
+        }, 1500 + i * 50))
       })
 
-      timeoutIds.push(setTimeout(() => reverseAnimation(), 5000))
+      timeoutIds.push(setTimeout(() => reverseAnimation(), 3000))
     }
 
     const reverseAnimation = () => {
@@ -40,7 +40,7 @@ export default function HomePage() {
           const remain = indoorLetters.length - (i + 1)
           const grayLetters = remain ? indoorLetters.slice(0, remain).map(c => `<span class='text-gray-500'>${c}</span>`).join('') : ''
           setTitle(`In${grayLetters}${grayLetters ? ' ' : '-'}Parking`)
-        }, i * 300))
+        }, i * 50))
       })
 
       timeoutIds.push(setTimeout(() => setTitle('In-Parking'), 1500 + reverseLetters.length * 300))
