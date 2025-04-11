@@ -90,7 +90,7 @@ export default function HomePage() {
             {!isDesktop && (
               <div className="w-full text-center text-sm text-gray-500">
                 <p className="mb-2">Scan QR Code to Find Your Spot</p>
-                <QRCodeScanner />
+                <QrScanner onScan={(value: string) => setQrCode(value)} />
               </div>
             )}
 
@@ -109,8 +109,6 @@ export default function HomePage() {
                 value={qrCode}
                 onChange={(e) => setQrCode(e.target.value)}
               />
-
-              <QrScanner onScan={(value: string) => setQrCode(value)} />
             </div>
           </motion.div>
         </div>
