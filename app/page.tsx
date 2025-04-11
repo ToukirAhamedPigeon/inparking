@@ -46,7 +46,7 @@ export default function HomePage() {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3, duration: 1.2, ease: "easeInOut" }}
       >
-        Smart, secure, and efficient indoor car parking guidance. Navigate your lot with ease.
+        Smart, secure, and efficient indoor car parking guiding system. Navigate your lot with ease.
       </motion.p>
 
       <motion.div
@@ -95,7 +95,7 @@ export default function HomePage() {
               exit={{ opacity: 0, y: 20 }}
               transition={{ duration: 1.2, ease: "easeInOut" }}
             >
-              {!isDesktop && showScanner && (
+              {showScanner && (
                 <div className="w-full text-center text-sm text-gray-500">
                   <p className="mb-2">Scan QR Code to Find Your Spot</p>
                   <div style={{ maxHeight: '250px', overflow: 'hidden' }}>
@@ -104,7 +104,7 @@ export default function HomePage() {
                 </div>
               )}
 
-              {!isDesktop && !showScanner && (
+              {!showScanner && (
                 <Button
                   onClick={() => setShowScanner(true)}
                   className="text-sm px-4 py-2 mt-2"
@@ -114,7 +114,7 @@ export default function HomePage() {
               )}
 
               <div className="w-full">
-                <label className="block text-gray-700 font-semibold mb-2 text-center">
+                <label className="block text-gray-700 font-semibold mb-2">
                   {isDesktop ? 'Enter QR Code Number' : 'Or enter QR Code Number'}
                 </label>
                 <Input
