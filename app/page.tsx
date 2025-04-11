@@ -102,7 +102,7 @@ export default function HomePage() {
               transition={{ duration: 1.2, ease: "easeInOut" }}
             >
               {!isDesktop && showScanner && (
-                <div className="w-full text-center text-sm text-gray-500">
+                <div className="w-full max-h-[250px] overflow-hidden bg-slate-300 rounded-xl shadow-xl">
                   <p className="mb-2">Scan QR Code to Find Your Spot</p>
                   <QrScanner onScan={handleScan} />
                 </div>
