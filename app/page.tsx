@@ -89,6 +89,7 @@ export default function HomePage() {
               <div className="w-full text-center text-sm text-gray-500">
                 <p className="mb-2">Scan QR Code to Find Your Spot</p>
                 <QRCodeScanner />
+                //here
               </div>
             )}
 
