@@ -32,14 +32,17 @@ export default function HomePage() {
         Welcome to InParking
       </motion.h1>
 
-      <motion.p
-        className="text-xl text-gray-600 text-center mb-8 max-w-xl"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3, duration: 0.8 }}
-      >
-        Smart, secure, and efficient indoor car parking guiding system. Navigate your lot with ease.
-      </motion.p>
+      {!showInput && (
+        <motion.p
+          className="text-xl text-gray-600 text-center mb-8 max-w-xl"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.8 }}
+        >
+          Smart, secure, and efficient indoor car parking guiding system. Navigate your lot with ease.
+        </motion.p>
+      )}
+
 
       <motion.div
         className="w-[300px] md:w-[400px] mb-10"
