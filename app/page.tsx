@@ -7,11 +7,13 @@ import { Button } from '@/components/ui/button'
 import { useMediaQuery } from 'usehooks-ts'
 import { Input } from "@/components/ui/input"
 import QRCodeScanner from '@/components/custom/QRCodeScanner'
+import QrScanner from '@/components/custom/QRCodeScanner'
 
 export default function HomePage() {
   const inputRef = useRef<HTMLDivElement>(null)
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const [showInput, setShowInput] = useState(false)
+  const [qrCode, setQrCode] = useState("")
 
   const handleScroll = () => {
     setShowInput(true) // show the QR/input section
@@ -99,11 +101,16 @@ export default function HomePage() {
               {isDesktop && (<label className="block text-gray-700 font-semibold mb-2">
                 Enter QR Code Number
               </label>)}
+
               <Input
                 type="text"
                 placeholder="Enter code here"
                 className="w-full"
+                value={qrCode}
+                onChange={(e) => setQrCode(e.target.value)}
               />
+
+              <QrScanner onScan={(value: string) => setQrCode(value)} />
             </div>
           </motion.div>
         </div>

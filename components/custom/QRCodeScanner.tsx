@@ -1,62 +1,56 @@
 'use client'
 
-import { useEffect } from "react";
-import { Html5Qrcode } from "html5-qrcode";
+import { useEffect, useRef } from "react"
+import { Html5Qrcode } from "html5-qrcode"
 
-const QrScanner = () => {
+interface QrScannerProps {
+  onScan: (value: string) => void
+}
+
+const QrScanner = ({ onScan }: QrScannerProps) => {
+  const scannerRef = useRef<Html5Qrcode | null>(null)
+  const qrRegionId = "qr-reader"
+
   useEffect(() => {
-    const qrRegionId = "qr-reader";
-
     const startScanner = async () => {
       try {
-        const devices = await Html5Qrcode.getCameras();
-        const backCamera = devices.find(device =>
-          device.label.toLowerCase().includes("back") ||
-          device.label.toLowerCase().includes("rear") ||
-          device.label.toLowerCase().includes("environment")
-        ) || devices[0]; // fallback to first camera
+        const devices = await Html5Qrcode.getCameras()
+        const backCamera =
+          devices.find(device =>
+            device.label.toLowerCase().includes("back") ||
+            device.label.toLowerCase().includes("rear") ||
+            device.label.toLowerCase().includes("environment")
+          ) || devices[0]
 
-        const html5QrCode = new Html5Qrcode(qrRegionId);
+        const scanner = new Html5Qrcode(qrRegionId)
+        scannerRef.current = scanner
 
-        await html5QrCode.start(
+        await scanner.start(
           backCamera.id,
-          {
-            fps: 10,
-            qrbox: { width: 250, height: 250 },
-          },
+          { fps: 10, qrbox: { width: 250, height: 250 } },
           (decodedText) => {
-            console.log("Scanned Code:", decodedText);
-            // Optionally stop scanning after one scan
-            html5QrCode.stop().then(() => {
-              console.log("Scanner stopped.");
-            });
+            onScan(decodedText)
+            scanner.stop()
           },
           (errorMessage) => {
-            // ignore scan errors
+            // console.log("Scan error:", errorMessage)
           }
-        );
+        )
       } catch (error) {
-        console.error("Error starting camera:", error);
+        console.error("Camera error:", error)
       }
-    };
+    }
 
-    startScanner();
+    startScanner()
 
     return () => {
-      Html5Qrcode.getCameras().then(() => {
-        Html5Qrcode.getCameras().then(() => {
-          const scanner = new Html5Qrcode(qrRegionId);
-          scanner.stop().catch(() => {});
-        });
-      });
-    };
-  }, []);
+      scannerRef.current?.stop().catch(() => {})
+    }
+  }, [onScan])
 
   return (
-    <div className="w-full flex justify-center items-center">
-      <div id="qr-reader" className="w-full max-w-md h-64 rounded-xl shadow-xl" />
-    </div>
-  );
-};
+    <div id={qrRegionId} className="w-full max-w-md h-64 rounded-xl shadow-xl" />
+  )
+}
 
-export default QrScanner;
+export default QrScanner
