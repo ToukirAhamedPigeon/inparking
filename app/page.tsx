@@ -40,20 +40,14 @@ export default function HomePage() {
         <span className='text-[30px]'>Welcome to</span><br /> <span className='text-red-500'>In-Parking</span>
       </motion.h1>
 
-      <AnimatePresence>
-        {!showInput && (
-          <motion.p
-            key="tagline"
-            className="text-xl text-gray-600 text-center mb-8 max-w-xl"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ delay: 0.3, duration: 1.2, ease: "easeInOut" }}
-          >
-            Smart, secure, and efficient indoor car parking guiding system. Navigate your lot with ease.
-          </motion.p>
-        )}
-      </AnimatePresence>
+      <motion.p
+        className="text-xl text-gray-600 text-center mb-8 max-w-xl"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3, duration: 1.2, ease: "easeInOut" }}
+      >
+        Smart, secure, and efficient indoor car parking guiding system. Navigate your lot with ease.
+      </motion.p>
 
       <motion.div
         className="w-[300px] md:w-[400px] mb-10"
@@ -102,9 +96,11 @@ export default function HomePage() {
               transition={{ duration: 1.2, ease: "easeInOut" }}
             >
               {!isDesktop && showScanner && (
-                <div className="w-full max-h-[250px] overflow-hidden bg-slate-300 rounded-xl shadow-xl">
+                <div className="w-full text-center text-sm text-gray-500">
                   <p className="mb-2">Scan QR Code to Find Your Spot</p>
-                  <QrScanner onScan={handleScan} />
+                  <div style={{ maxHeight: '250px', overflow: 'hidden' }}>
+                    <QrScanner onScan={handleScan} />
+                  </div>
                 </div>
               )}
 
@@ -118,7 +114,7 @@ export default function HomePage() {
               )}
 
               <div className="w-full">
-                <label className="block text-gray-700 font-semibold mb-2 text-center">
+                <label className="block text-gray-700 font-semibold mb-2">
                   {isDesktop ? 'Enter QR Code Number' : 'Or enter QR Code Number'}
                 </label>
                 <Input
