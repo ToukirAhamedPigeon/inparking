@@ -1,42 +1,62 @@
-'use client'
+import { Html5QrcodeScanner, Html5QrcodeScanType, Html5Qrcode } from "html5-qrcode";
+import { useEffect } from "react";
 
-import { useEffect, useRef, useState } from 'react'
-import { Html5QrcodeScanner, Html5QrcodeScanType } from 'html5-qrcode'
-
-export default function QRCodeScanner() {
-  const [scannedResult, setScannedResult] = useState<string | null>(null)
-  const scannerRef = useRef<HTMLDivElement>(null)
-
+const QrScanner = () => {
   useEffect(() => {
-    if (!scannerRef.current || scannedResult) return
-
-    const scanner = new Html5QrcodeScanner('qr-reader', {
+    const config = {
       fps: 10,
-        qrbox: { width: 250, height: 250 },
-        rememberLastUsedCamera: false,
-        supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
-    },false)
+      qrbox: { width: 250, height: 250 },
+      rememberLastUsedCamera: false,
+      supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA]
+    };
 
-    scanner.render(
-      (decodedText) => {
-        setScannedResult(decodedText)
-        scanner.clear()
-      },
-      (error) => {
-        // console.warn('QR Code Scan Error:', error)
+    const scanner = new Html5QrcodeScanner("qr-reader", config, false);
+
+    // Always scan from back camera (environment facing)
+    Html5Qrcode.getCameras().then(devices => {
+      const backCamera = devices.find(device =>
+        device.label.toLowerCase().includes("back") ||
+        device.label.toLowerCase().includes("rear") ||
+        device.label.toLowerCase().includes("environment")
+      );
+
+      if (backCamera) {
+        const html5QrCode = new Html5Qrcode("qr-reader");
+        html5QrCode.start(
+          backCamera.id,
+          {
+            fps: 10,
+            qrbox: { width: 250, height: 250 },
+          },
+          (decodedText, decodedResult) => {
+            console.log("Scan success", decodedText);
+          },
+          (error) => {
+            console.warn("Scan error", error);
+          }
+        );
+      } else {
+        // fallback to scanner UI if no back camera found
+        scanner.render(
+          (decodedText, decodedResult) => {
+            console.log("Scan success", decodedText);
+          },
+          (error) => {
+            console.warn("Scan error", error);
+          }
+        );
       }
-    )
-  }, [scannedResult])
+    }).catch(err => {
+      console.error("Camera fetch error:", err);
+    });
 
-  return (
-    <div className="w-full">
-      {!scannedResult ? (
-        <div id="qr-reader" ref={scannerRef} className="w-full h-60 rounded-md bg-gray-200"></div>
-      ) : (
-        <div className="text-center text-green-700 font-semibold text-lg mt-4">
-          ✅ QR Code Scanned: {scannedResult}
-        </div>
-      )}
-    </div>
-  )
-}
+    // Optional cleanup
+    return () => {
+      scanner.clear().catch(() => {});
+    };
+  }, []);
+
+  return <div id="qr-reader" className="w-full h-64" />;
+};
+
+export default QrScanner;
