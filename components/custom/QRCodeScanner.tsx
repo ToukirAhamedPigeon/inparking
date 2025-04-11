@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { Html5QrcodeScanner } from 'html5-qrcode'
+import { Html5QrcodeScanner, Html5QrcodeScanType } from 'html5-qrcode'
 
 export default function QRCodeScanner() {
   const [scannedResult, setScannedResult] = useState<string | null>(null)
@@ -12,7 +12,9 @@ export default function QRCodeScanner() {
 
     const scanner = new Html5QrcodeScanner('qr-reader', {
       fps: 10,
-      qrbox: 250,
+        qrbox: { width: 250, height: 250 },
+        rememberLastUsedCamera: false,
+        supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
     },false)
 
     scanner.render(
