@@ -10,6 +10,7 @@ interface QrScannerProps {
 const QrScanner = ({ onScan }: QrScannerProps) => {
   const scannerRef = useRef<Html5Qrcode | null>(null)
   const qrRegionId = "qr-reader"
+  const isScanningRef = useRef(false)
 
   useEffect(() => {
     const startScanner = async () => {
@@ -22,18 +23,25 @@ const QrScanner = ({ onScan }: QrScannerProps) => {
             device.label.toLowerCase().includes("environment")
           ) || devices[0]
 
+        if (!backCamera) throw new Error("No camera found")
+
         const scanner = new Html5Qrcode(qrRegionId)
         scannerRef.current = scanner
+        isScanningRef.current = true
 
         await scanner.start(
           backCamera.id,
           { fps: 10, qrbox: { width: 250, height: 250 } },
-          (decodedText) => {
-            onScan(decodedText)
-            scanner.stop()
+          async (decodedText) => {
+            if (isScanningRef.current) {
+              isScanningRef.current = false
+              onScan(decodedText)
+              await scanner.stop()
+              await scanner.clear()
+            }
           },
           (errorMessage) => {
-            // console.log("Scan error:", errorMessage)
+            // handle scan errors silently or log
           }
         )
       } catch (error) {
@@ -41,10 +49,23 @@ const QrScanner = ({ onScan }: QrScannerProps) => {
       }
     }
 
-    startScanner()
+    const el = document.getElementById(qrRegionId)
+    if (el) {
+      startScanner()
+    }
 
     return () => {
-      scannerRef.current?.stop().catch(() => {})
+      const stopScanner = async () => {
+        if (scannerRef.current) {
+          try {
+            await scannerRef.current.stop()
+            await scannerRef.current.clear()
+          } catch (err) {
+            console.warn("Scanner cleanup failed:", err)
+          }
+        }
+      }
+      stopScanner()
     }
   }, [onScan])
 

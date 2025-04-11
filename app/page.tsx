@@ -6,7 +6,6 @@ import { useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { useMediaQuery } from 'usehooks-ts'
 import { Input } from "@/components/ui/input"
-import QRCodeScanner from '@/components/custom/QRCodeScanner'
 import QrScanner from '@/components/custom/QRCodeScanner'
 
 export default function HomePage() {
@@ -14,14 +13,20 @@ export default function HomePage() {
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const [showInput, setShowInput] = useState(false)
   const [qrCode, setQrCode] = useState("")
+  const [showScanner, setShowScanner] = useState(true)
 
   const handleScroll = () => {
-    setShowInput(true) // show the QR/input section
+    setShowInput(true)
     setTimeout(() => {
       if (!isDesktop && inputRef.current) {
         inputRef.current.scrollIntoView({ behavior: 'smooth' })
       }
-    }, 100) // short delay to ensure DOM updates before scroll
+    }, 100)
+  }
+
+  const handleScan = (value: string) => {
+    setQrCode(value)
+    setShowScanner(false) // Hide scanner after successful scan
   }
 
   return (
@@ -45,7 +50,6 @@ export default function HomePage() {
           Smart, secure, and efficient indoor car parking guiding system. Navigate your lot with ease.
         </motion.p>
       )}
-
 
       <motion.div
         className="w-[300px] md:w-[400px] mb-10"
@@ -75,7 +79,7 @@ export default function HomePage() {
         </Button>
       </motion.div>
 
-      {/* 👇 Conditionally rendered QR/Input Section */}
+      {/* QR/Input Section */}
       {showInput && (
         <div
           ref={inputRef}
@@ -87,21 +91,29 @@ export default function HomePage() {
             transition={{ duration: 0.6 }}
             className="w-full max-w-md bg-white p-6 rounded-xl shadow-xl flex flex-col items-center space-y-4"
           >
-            {!isDesktop && (
+            {/* Scanner */}
+            {!isDesktop && showScanner && (
               <div className="w-full text-center text-sm text-gray-500">
                 <p className="mb-2">Scan QR Code to Find Your Spot</p>
-                <QrScanner onScan={(value: string) => setQrCode(value)} />
+                <QrScanner onScan={handleScan} />
               </div>
             )}
 
-            <div className="w-full">
-            {!isDesktop && (<label className="block text-gray-700 font-semibold mb-2">
-                Or enter QR Code Number
-              </label>)}
-              {isDesktop && (<label className="block text-gray-700 font-semibold mb-2">
-                Enter QR Code Number
-              </label>)}
+            {/* Scan Again Button */}
+            {!isDesktop && !showScanner && (
+              <Button
+                onClick={() => setShowScanner(true)}
+                className="text-sm px-4 py-2 mt-2"
+              >
+                Scan Again
+              </Button>
+            )}
 
+            {/* Input */}
+            <div className="w-full">
+              <label className="block text-gray-700 font-semibold mb-2">
+                {isDesktop ? 'Enter QR Code Number' : 'Or enter QR Code Number'}
+              </label>
               <Input
                 type="text"
                 placeholder="Enter code here"
