@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { useMediaQuery } from 'usehooks-ts'
 import { Input } from "@/components/ui/input"
@@ -14,44 +14,6 @@ export default function HomePage() {
   const [showInput, setShowInput] = useState(false)
   const [qrCode, setQrCode] = useState("")
   const [showScanner, setShowScanner] = useState(true)
-  const [title, setTitle] = useState('In-Parking')
-
-  useEffect(() => {
-    let timeoutIds: NodeJS.Timeout[] = []
-    const indoorLetters = ['d', 'o', 'o', 'r']
-
-    const animateToIndoor = async () => {
-      timeoutIds.push(setTimeout(() => setTitle('In Parking'), 1000)) // change dash to space
-
-      indoorLetters.forEach((letter, i) => {
-        timeoutIds.push(setTimeout(() => {
-          const grayLetters = indoorLetters.slice(0, i + 1).map(c => `<span class='text-gray-500'>${c}</span>`).join('')
-          setTitle(`In${grayLetters} Parking`)
-        }, 1500 + i * 50))
-      })
-
-      timeoutIds.push(setTimeout(() => reverseAnimation(), 3000))
-    }
-
-    const reverseAnimation = () => {
-      const reverseLetters = [...indoorLetters].reverse()
-      reverseLetters.forEach((_, i) => {
-        timeoutIds.push(setTimeout(() => {
-          const remain = indoorLetters.length - (i + 1)
-          const grayLetters = remain ? indoorLetters.slice(0, remain).map(c => `<span class='text-gray-500'>${c}</span>`).join('') : ''
-          setTitle(`In${grayLetters}${grayLetters ? ' ' : '-'}Parking`)
-        }, i * 50))
-      })
-
-      timeoutIds.push(setTimeout(() => setTitle('In-Parking'), 1500 + reverseLetters.length * 300))
-    }
-
-    animateToIndoor()
-
-    return () => {
-      timeoutIds.forEach(clearTimeout)
-    }
-  }, [])
 
   const handleScroll = () => {
     setShowInput(true)
@@ -75,8 +37,7 @@ export default function HomePage() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8 }}
       >
-        <span className='text-[30px]'>Welcome to</span><br />
-        <span className='text-red-500' dangerouslySetInnerHTML={{ __html: title }} />
+        <span className='text-[30px]'>Welcome to</span><br /> <span className='text-red-500'>In-Parking</span>
       </motion.h1>
 
       <motion.p
