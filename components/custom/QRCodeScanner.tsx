@@ -70,7 +70,7 @@ const QrScanner = ({ onScan }: QrScannerProps) => {
   }, [onScan])
 
   return (
-    <div id={qrRegionId} className="w-full max-w-md h-64 rounded-xl shadow-xl" />
+    <div id={qrRegionId} className="w-full bg-slate-300 max-w-md h-64 rounded-xl shadow-xl" />
   )
 }
 
