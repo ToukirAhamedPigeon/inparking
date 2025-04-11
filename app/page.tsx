@@ -30,7 +30,7 @@ export default function HomePage() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8 }}
       >
-        Welcome to InParking
+        Welcome to In-Parking
       </motion.h1>
 
       {!showInput && (
