@@ -1,11 +1,13 @@
-export default function Offline() {
-    return (
-      <div className="flex items-center justify-center min-h-screen text-center px-4">
-        <div>
-          <h1 className="text-2xl font-bold mb-2">You are offline</h1>
-          <p className="text-gray-500">Please check your internet connection and try again.</p>
-        </div>
-      </div>
-    )
-  }
-  
+// pages/_offline.tsx
+import type { NextPage } from 'next';
+
+const OfflinePage: NextPage = () => {
+  return (
+    <div style={{ textAlign: 'center', padding: '50px' }}>
+      <h1>Offline</h1>
+      <p>Sorry, you're offline. Please check your connection and try again.</p>
+    </div>
+  );
+};
+
+export default OfflinePage;
