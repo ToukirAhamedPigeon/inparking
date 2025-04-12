@@ -78,7 +78,6 @@ export default function SignInPage() {
                 <h1 className="text-3xl font-bold text-gray-800 tracking-wide">
                   In-Parking
                 </h1>
-                <p className="text-gray-500 text-sm">Welcome back, admin</p>
               </div>
 
               <motion.form
