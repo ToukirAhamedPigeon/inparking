@@ -1,9 +1,17 @@
 import mongoose from 'mongoose'
-import User from '../models/User'
-import { hashPassword } from '../lib/hash'
-import dotenv from 'dotenv'
 import path from 'path'
-import { UserType } from '@/types'
+import dotenv from 'dotenv'
+
+import User from '../models/User'
+import Zone from '../models/Zone'
+import Slot from '../models/Slot'
+import Allotment from '../models/Allotment'
+import Log from '../models/Log'
+import Image from '../models/Image'
+import Route from '../models/Route'
+
+import { hashPassword } from '../lib/hash'
+import { IUser, EUserRole } from '@/types'
 
 dotenv.config({ path: path.resolve(__dirname, '../.env.local') })
 
@@ -18,7 +26,8 @@ async function migrate() {
     await mongoose.connect(MONGO_URI)
     console.log('✅ Connected to MongoDB')
 
-    const existingAdmin: UserType | null = await User.findOne({ email: 'admin@inparking.com' })
+    // Create admin user
+    const existingAdmin: IUser | null = await User.findOne({ email: 'admin@inparking.com' })
     if (existingAdmin) {
       console.log('⚠️ Admin already exists. Skipping creation.')
     } else {
@@ -31,10 +40,32 @@ async function migrate() {
         password: hashedPassword,
         decryptedPassword: password,
         profilePicture: '/assets/policeman.png',
-        role: 'admin',
+        role: EUserRole.ADMIN,
+        isActive: true
       })
 
       console.log('✅ Admin user created successfully')
+    }
+
+    // Initialize empty documents to trigger collection creation
+    const collections = [
+      { name: 'Zone', model: Zone },
+      { name: 'Slot', model: Slot },
+      { name: 'Allotment', model: Allotment },
+      { name: 'Log', model: Log },
+      { name: 'Image', model: Image },
+      { name: 'Route', model: Route }
+    ]
+
+    for (const { name, model } of collections) {
+      const exists = await model.exists({})
+      if (!exists) {
+        await model.create({})
+        await model.deleteMany({})
+        console.log(`✅ Initialized empty collection: ${name}`)
+      } else {
+        console.log(`⚠️ Collection ${name} already has documents`)
+      }
     }
 
     await mongoose.disconnect()
