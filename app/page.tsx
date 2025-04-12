@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { useMediaQuery } from 'usehooks-ts'
 import { Input } from "@/components/ui/input"
 import QrScanner from '@/components/custom/QRCodeScanner'
+import Footer from '@/components/custom/Footer'
 
 export default function HomePage() {
   const inputRef = useRef<HTMLDivElement>(null)
@@ -19,7 +20,7 @@ export default function HomePage() {
     setShowInput(true)
     setTimeout(() => {
       if (!isDesktop && inputRef.current) {
-        inputRef.current.scrollIntoView({ behavior: 'smooth' })
+        inputRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
       }
     }, 100)
   }
@@ -76,13 +77,13 @@ export default function HomePage() {
           Navigate to Parking Lot
         </Button>
       </motion.div>
-
+      <div className='w-full min-h-[200px]'>
       <AnimatePresence>
         {showInput && (
           <motion.div
             key="inputSection"
             ref={inputRef}
-            className="mt-16 w-full flex justify-center items-center"
+            className="mt-16 w-full flex justify-center items-center mb-[20px]"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 30 }}
@@ -129,6 +130,13 @@ export default function HomePage() {
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
+      <motion.div
+        className="w-[300px] md:w-[400px] mb-10"
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay: 1.5, duration: 0.8 }}
+      ><Footer footerClasses="bottom-0 w-full py-4 text-center text-xs text-gray-600  overflow-hidden" linkClasses="text-red-600 hover:underline" /></motion.div>
     </main>
   )
 }

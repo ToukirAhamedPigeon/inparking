@@ -13,6 +13,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { signInSchema, SignInSchemaType } from '@/lib/validations'
 import Container from '@/components/custom/Container'
+import Footer from '@/components/custom/Footer'
 
 export default function SignInPage() {
   const router = useRouter()
@@ -138,6 +139,7 @@ export default function SignInPage() {
                 >
                   {isSubmitting ? 'Signing In...' : 'Sign In'}
                 </Button>
+                <Footer footerClasses="bottom-0 w-full py-4 text-center text-xs text-gray-600  overflow-hidden" linkClasses="text-red-600 hover:underline" />
               </motion.form>
             </CardContent>
           </Card>
