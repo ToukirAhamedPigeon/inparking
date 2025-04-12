@@ -11,7 +11,7 @@ import Image from '../models/Image'
 import Route from '../models/Route'
 
 import { hashPassword } from '../lib/hash'
-import { IUser, EUserRole } from '@/types'
+import { IUser, EUserRole } from '../types'
 
 dotenv.config({ path: path.resolve(__dirname, '../.env.local') })
 
