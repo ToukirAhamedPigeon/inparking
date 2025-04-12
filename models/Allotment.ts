@@ -1,5 +1,5 @@
 import { Schema, model, models, Types } from 'mongoose'
-import { IAllotment } from '@/types'
+import { IAllotment } from '../types'
 
 const allotmentSchema = new Schema<IAllotment>(
   {

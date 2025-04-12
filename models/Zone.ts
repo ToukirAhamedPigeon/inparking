@@ -1,5 +1,5 @@
 import { Schema, model, models, Types } from 'mongoose'
-import { IZone } from '@/types'
+import { IZone } from '../types'
 
 const zoneSchema = new Schema<IZone>(
   {

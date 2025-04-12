@@ -1,5 +1,5 @@
 import { Schema, model, models, Types } from 'mongoose'
-import { ISlot } from '@/types'
+import { ISlot } from '../types'
 
 const slotSchema = new Schema<ISlot>(
   {

@@ -1,5 +1,5 @@
 import { Schema, model, models, Types } from 'mongoose'
-import { IImage, EModelType } from '@/types'
+import { IImage, EModelType } from '../types'
 
 const imageSchema = new Schema<IImage>(
   {

@@ -1,5 +1,5 @@
 import { Schema, model, models, Types } from 'mongoose'
-import { IRoute } from '@/types'
+import { IRoute } from '../types'
 
 const routeSchema = new Schema<IRoute>(
   {

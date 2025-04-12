@@ -1,5 +1,5 @@
 import { Schema, model, models, Types } from 'mongoose'
-import { ILog, EActionType } from '@/types'
+import { ILog, EActionType } from '../types'
 
 const logSchema = new Schema<ILog>(
   {
