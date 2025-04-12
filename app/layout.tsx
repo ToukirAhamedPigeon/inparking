@@ -19,7 +19,6 @@ export const metadata: Metadata = {
   icons: {
     icon: "/icons/icon-192x192.png",
   },
-  themeColor: "#1d4ed8",
   manifest: "/manifest.json",
   
 };
@@ -31,6 +30,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Favicon */}
+        <link rel="icon" href="/icons/icon-192x192.png" type="image/png" />
+        
+        {/* Optional: Other device icons */}
+        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+        <link rel="icon" sizes="192x192" href="/icons/icon-192x192.png" />
+        <link rel="icon" sizes="16x16 32x32 48x48" href="/icons/icon-192x192.png" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
