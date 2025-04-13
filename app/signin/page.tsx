@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useAuth } from '@/contexts/AuthContext'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { motion } from 'framer-motion'
@@ -17,6 +18,7 @@ import Footer from '@/components/custom/Footer'
 
 export default function SignInPage() {
   const router = useRouter()
+  const { setUser } = useAuth()
   const [error, setError] = useState<string | null>(null)
 
   const {
@@ -41,6 +43,15 @@ export default function SignInPage() {
         const err = await res.json()
         throw new Error(err.message || 'Login failed')
       }
+
+      const responseData = await res.json()
+
+    // Save authUser in localStorage
+    localStorage.setItem('authUser', JSON.stringify(responseData.user))
+
+    // Optionally update context if you use AuthContext
+
+    setUser(responseData.user)
   
       router.push('/admin')
     } catch (err: any) {
@@ -96,7 +107,7 @@ export default function SignInPage() {
                     id="email"
                     type="email"
                     {...register('email')}
-                    className="mt-1 border-gray-400"
+                    className="mt-1 border-gray-400 bg-white"
                   />
                   {errors.email && (
                     <p className="text-red-500 text-sm mt-1">
@@ -113,7 +124,7 @@ export default function SignInPage() {
                     id="password"
                     type="password"
                     {...register('password')}
-                    className="mt-1 border-gray-400"
+                    className="mt-1 border-gray-400 bg-white"
                   />
                   {errors.password && (
                     <p className="text-red-500 text-sm mt-1">
@@ -148,3 +159,5 @@ export default function SignInPage() {
     </div>
   )
 }
+
+

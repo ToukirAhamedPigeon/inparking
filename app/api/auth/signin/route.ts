@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server'
 import jwt from 'jsonwebtoken'
 
 import User from '@/models/User'
+import '@/models/Image';
 import dbConnect from '@/lib/dbConnect'
 import { comparePassword } from '@/lib/hash'
 import { signInSchema } from '@/lib/validations'
@@ -22,7 +23,7 @@ export async function POST(req: Request) {
     }
 
     const { email, password } = parsed.data
-    const user = await User.findOne({ email })
+    const user = await User.findOne({ email }).populate('profilePicture')
 
     if (!user || !user.isActive) {
       return NextResponse.json({ message: 'Invalid credentials' }, { status: 401 })
@@ -51,9 +52,11 @@ export async function POST(req: Request) {
       maxAge: 7 * 24 * 60 * 60, // 7 days
     })
 
+
+
     return NextResponse.json({
       message: 'Signed in successfully',
-      user: { id: user._id, name: user.name, role: user.role }
+      user: { id: user._id, name: user.name, role: user.role, email: user.email, profilePicture: user.profilePicture?.imageUrl }
     })
 
   } catch (error) {
