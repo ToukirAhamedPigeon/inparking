@@ -31,7 +31,7 @@ export default function AdminNavbarLayout({ children }: { children: React.ReactN
           </Main>
         </div>
 
-        <Footer footerClasses="bottom-0 w-full py-1 text-center md:text-right px-4 text-xs text-gray-600 bg-transparent border-t border-gray-200 overflow-hidden" linkClasses="text-red-600 hover:underline" showVersion={true} />
+        <Footer footerClasses="flex justify-end bottom-0 w-full py-1 text-center md:text-right px-4 text-xs text-gray-600 bg-transparent border-t border-gray-200 overflow-hidden" linkClasses="text-red-600 hover:underline" showVersion={true} />
       </div>
     </SidebarProvider>
   )
