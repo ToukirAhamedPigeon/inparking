@@ -15,6 +15,7 @@ import { Label } from '@/components/ui/label'
 import { signInSchema, SignInSchemaType } from '@/lib/validations'
 import Container from '@/components/custom/Container'
 import Footer from '@/components/custom/Footer'
+import Link from 'next/link'
 
 export default function SignInPage() {
   const router = useRouter()
@@ -80,16 +81,18 @@ export default function SignInPage() {
           <Card className="min-w-[340px] md:min-w-96 shadow-xl backdrop-blur-lg bg-white/90 border border-white/40 rounded-2xl overflow-hidden">
             <CardContent className="p-8">
               <div className="flex flex-col items-center mb-6">
-                <Image
-                  src="/icons/icon-512x512.png"
-                  alt="In-Parking Logo"
-                  width={60}
-                  height={60}
-                  className="mb-2"
-                />
+                <Link href="/">
+                  <Image
+                    src="/icons/icon-512x512.png"
+                    alt="In-Parking Logo"
+                    width={60}
+                    height={60}
+                    className="mb-2"
+                  />
+                </Link>
                 <h1 className="text-3xl font-bold text-gray-800 tracking-wide">
                   In-Parking
-                </h1>
+                </h1> 
               </div>
 
               <motion.form
