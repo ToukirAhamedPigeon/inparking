@@ -45,7 +45,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          <RouteProgress color="#ffffff" />
+          <RouteProgress color="#3b82f6" />
           {children}
         </Providers>
       </body>
