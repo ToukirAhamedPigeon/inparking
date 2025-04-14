@@ -22,7 +22,7 @@ export default function SidebarMobileSheet() {
           </SheetTitle>
         </SheetHeader>
         <div className="p-4">
-          <Nav/>
+          <Nav onLinkClick={() => setOpen(false)}/>
         </div>
       </SheetContent>
     </Sheet>

@@ -37,7 +37,7 @@ const menuItems = [
   }
 ];
 
-export default function SidebarMenu() {
+export default function Nav({ onLinkClick }: { onLinkClick?: () => void }) {
   const pathname = usePathname();
   const [openMenus, setOpenMenus] = useState<string[]>([]);
 
@@ -70,6 +70,7 @@ export default function SidebarMenu() {
                 <span>{isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}</span>}
             </button> : <Link
               href={basePath}
+              onClick={onLinkClick}
               className={`w-full flex items-center justify-between px-4 py-3 text-left bg-white/60 hover:bg-white/80 border-b border-white transition-all 
                 ${alwaysOpen ? 'main-gradient text-white font-semibold' : ''}`}
             >
@@ -89,6 +90,7 @@ export default function SidebarMenu() {
                     <Link
                       key={subLabel}
                       href={subPath}
+                      onClick={onLinkClick}
                       className={`block px-4 py-2 bg-white/20 hover:bg-white/50 border-b border-white transition-all 
                         ${isActiveSubmenu(subPath) ? 'bg-blue-200 hover:bg-blue-300 text-blue-600 font-semibold' : ''}`}
                     >
