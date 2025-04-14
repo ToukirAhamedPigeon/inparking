@@ -10,7 +10,7 @@ export default function Footer({ footerClasses, linkClasses, showVersion = false
       <Link href="https://pigeonic.com" target="_blank" className={linkClasses}>
         Pigeonic
       </Link>
-      {showVersion && <span>
+      {showVersion && <span className='hidden md:block'>
         &nbsp;&nbsp;&nbsp;<small className='font-bold'>v1.0.0</small>
       </span>}
     </footer>

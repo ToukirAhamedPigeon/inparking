@@ -24,6 +24,7 @@
     "framer-motion": "^12.6.3",
     "glob": "^11.0.1",
     "html5-qrcode": "^2.3.8",
+    "jsondiffpatch": "^0.7.3",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.487.0",
     "mongoose": "^8.13.2",

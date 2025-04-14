@@ -15,8 +15,8 @@ export default function SidebarMobileSheet() {
           <Menu className="h-6 w-6" />
         </button>
       </SheetTrigger>
-      <SheetContent side="left" className="p-0 bg-[radial-gradient(circle_at_bottom_left,_#fff1eb,_#d1fdff)]">
-        <SheetHeader className="flex items-start justify-center bg-gradient-to-r from-[#2193b0] to-[#6dd5ed] py-2 px-4">
+      <SheetContent side="left" className="p-0 secondary-gradient">
+        <SheetHeader className="flex items-start justify-center main-gradient py-2 px-4">
           <SheetTitle>
             <Logo isTitle={true} className="" titleClassName="text-white" />
           </SheetTitle>

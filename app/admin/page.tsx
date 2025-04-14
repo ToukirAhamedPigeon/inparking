@@ -1,20 +1,5 @@
-// app/admin/page.tsx
-'use client'
+import { redirect } from 'next/navigation'
 
-import LogoutButton from '@/components/custom/LogoutButton'
-import Breadcrumb from '@/components/module/admin/layout/Breadcrumb'
-import { useAuth } from '@/contexts/AuthContext'
-
-export default function AdminDashboard() {
-  const { user } = useAuth()
-
-  return (
-    <Breadcrumb
-        title="Dashboard"
-        showTitle={true}
-        items={[
-          // Current page (no href)
-        ]}
-      />
-  )
+export default function AdminRedirect() {
+  redirect('/admin/dashboard')
 }

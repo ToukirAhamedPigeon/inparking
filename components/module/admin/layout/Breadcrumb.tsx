@@ -20,13 +20,13 @@ export default function Breadcrumb({
   showTitle = true,
 }: BreadcrumbProps) {
   return (
-    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 px-4 py-8">
+    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 py-4">
       {showTitle && (
         <h1 className="text-lg md:text-xl font-bold text-gray-800">{title}</h1>
       )}
-     {items.length > 0 && <nav className="flex items-center text-sm text-gray-800 flex-wrap gap-x-2">
+     {items.length > 0 && <nav className="flex items-center text-xs md:text-sm text-gray-800 flex-wrap gap-x-2">
         <Link
-          href="/admin"
+          href="/admin/dashboard"
           className="hover:underline flex items-center gap-1"
         >
           <Home className="w-4 h-4" />

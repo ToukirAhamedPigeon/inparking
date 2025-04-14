@@ -7,7 +7,7 @@ import { ChevronRight, ChevronUp, ChevronDown } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const menuItems = [
-  { label: 'Dashboard', icon: '🏠', basePath: '/admin', children: [] },
+  { label: 'Dashboard', icon: '🏠', basePath: '/admin/dashboard', children: [] },
   {
     label: 'Zones', icon: '📍', basePath: '/admin/zones', children: [
       { label: 'List', basePath: '/admin/zones/list' },
@@ -29,9 +29,12 @@ const menuItems = [
   {
     label: 'Users', icon: '👥', basePath: '/admin/users', children: [
       { label: 'List', basePath: '/admin/users/list' },
-      { label: 'Add', basePath: '/admin/users/add' },
+      { label: 'Register', basePath: '/admin/users/register' },
     ]
   },
+  {
+    label: 'Logs', icon: '📝', basePath: '/admin/logs', children: []
+  }
 ];
 
 export default function SidebarMenu() {
@@ -50,22 +53,28 @@ export default function SidebarMenu() {
   const isActiveSubmenu = (path: string) => pathname === path;
 
   return (
-    <nav className="space-y-0 py-14 text-gray-600">
+    <nav className="space-y-0 py-6 text-gray-600">
       {menuItems.map(({ label, icon, basePath, children }) => {
         const alwaysOpen = isActiveMenu(basePath);
         const isOpen = openMenus.includes(label) || alwaysOpen;
 
         return (
           <div key={label}>
-            <button
+            {children?.length > 0 ? <button
               className={`w-full flex items-center justify-between px-4 py-3 text-left bg-white/60 hover:bg-white/80 border-b border-white transition-all 
-                ${alwaysOpen ? 'bg-gradient-to-r from-[#2193b0] to-[#6dd5ed] text-white font-semibold' : ''}`}
+                ${alwaysOpen ? 'main-gradient text-white font-semibold' : ''}`}
               onClick={() => toggleMenu(label)}
             >
               <span>{icon} {label}</span>
               {children?.length > 0 &&
                 <span>{isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}</span>}
-            </button>
+            </button> : <Link
+              href={basePath}
+              className={`w-full flex items-center justify-between px-4 py-3 text-left bg-white/60 hover:bg-white/80 border-b border-white transition-all 
+                ${alwaysOpen ? 'main-gradient text-white font-semibold' : ''}`}
+            >
+              <span>{icon} {label}</span>
+            </Link>}
 
             <AnimatePresence initial={false}>
               {isOpen && children?.length > 0 && (
@@ -81,7 +90,7 @@ export default function SidebarMenu() {
                       key={subLabel}
                       href={subPath}
                       className={`block px-4 py-2 bg-white/20 hover:bg-white/50 border-b border-white transition-all 
-                        ${isActiveSubmenu(subPath) ? 'bg-white font-medium' : ''}`}
+                        ${isActiveSubmenu(subPath) ? 'bg-blue-200 hover:bg-blue-300 text-blue-600 font-semibold' : ''}`}
                     >
                       <span className="flex items-center gap-2 text-sm">
                         <ChevronRight className="w-4 h-4" /> {subLabel}

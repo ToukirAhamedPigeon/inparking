@@ -12,7 +12,7 @@ export function authMiddleware(request: NextRequest) {
   }
 
   if (isAuthPage && token) {
-    return NextResponse.redirect(new URL('/admin', request.url))
+    return NextResponse.redirect(new URL('/admin/dashboard', request.url))
   }
 
   return NextResponse.next()

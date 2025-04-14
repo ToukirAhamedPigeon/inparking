@@ -53,7 +53,7 @@ export default function SignInPage() {
 
     setUser(responseData.user)
   
-      router.push('/admin')
+      router.push('/admin/dashboard')
     } catch (err: any) {
       setError(err.message || 'Something went wrong')
     }
@@ -150,7 +150,7 @@ export default function SignInPage() {
                 >
                   {isSubmitting ? 'Signing In...' : 'Sign In'}
                 </Button>
-                <Footer footerClasses="bottom-0 w-full py-4 text-center text-xs text-gray-600  overflow-hidden" linkClasses="text-red-600 hover:underline" />
+                <Footer footerClasses="bottom-0 w-full py-4 text-center text-xs text-gray-600  overflow-hidden" linkClasses="text-red-600 hover:underline" showVersion={false} />
               </motion.form>
             </CardContent>
           </Card>
