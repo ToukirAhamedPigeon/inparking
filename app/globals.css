@@ -71,4 +71,18 @@
   .secondary-gradient {
     @apply bg-[radial-gradient(circle_at_bottom_left,_#FFFEFF,_#bddef7)]
   }
+  /* nprogress.css */
+  #nprogress {
+    pointer-events: none;
+  }
+
+  #nprogress .bar {
+    position: fixed;
+    z-index: 9999;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 10px;
+  }
+
 }

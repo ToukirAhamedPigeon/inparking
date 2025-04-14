@@ -10,7 +10,7 @@ import Footer from '@/components/custom/Footer'
 import FullPageLoader from '@/components/custom/FullPageLoader'
 import Header from '@/components/module/admin/layout/Header'
 import Main from '@/components/module/admin/layout/Main'
-
+import RouteProgress from '@/components/module/admin/layout/RouteProgress'
 export default function AdminNavbarLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth()
   if (loading) return <FullPageLoader />
@@ -18,6 +18,7 @@ export default function AdminNavbarLayout({ children }: { children: React.ReactN
 
   return (
     <SidebarProvider>
+      <RouteProgress color="#ffffff" />
       <div className="flex flex-col min-h-screen">
         {/* Header */}
         <Header user={user} />
