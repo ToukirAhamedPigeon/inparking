@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export function authMiddleware(request: NextRequest) {
   const token = request.cookies.get('inparking_token')?.value
-  console.log('inparking_token', token)
 
   const isAuthPage = request.nextUrl.pathname.startsWith('/signin')
   const isAdminPage = request.nextUrl.pathname.startsWith('/admin')

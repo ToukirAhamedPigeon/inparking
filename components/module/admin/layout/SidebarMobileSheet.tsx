@@ -1,8 +1,9 @@
 'use client'
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Menu } from 'lucide-react'
 import { useState } from 'react'
 import Logo from './Logo'
+import Nav from './Nav'
 
 export default function SidebarMobileSheet() {
   const [open, setOpen] = useState(false)
@@ -14,17 +15,15 @@ export default function SidebarMobileSheet() {
           <Menu className="h-6 w-6" />
         </button>
       </SheetTrigger>
-      <SheetContent side="left" className="p-0 px-8">
-        <SheetHeader className="flex items-start justify-center border-b border-gray-200">
+      <SheetContent side="left" className="p-0 bg-[radial-gradient(circle_at_bottom_left,_#fff1eb,_#d1fdff)]">
+        <SheetHeader className="flex items-start justify-center bg-gradient-to-r from-[#2193b0] to-[#6dd5ed] py-2 px-4">
           <SheetTitle>
-            <Logo isTitle={true} className="py-4" />
+            <Logo isTitle={true} className="" titleClassName="text-white" />
           </SheetTitle>
         </SheetHeader>
-        <nav className="space-y-6 py-14">
-          <div>🏠 Dashboard</div>
-          <div>🚗 Parking</div>
-          <div>👥 Users</div>
-        </nav>
+        <div className="p-4">
+          <Nav/>
+        </div>
       </SheetContent>
     </Sheet>
   )

@@ -118,3 +118,9 @@ export interface ILog {
   createdBy: IUser;
   createdAt: Date;
 }
+
+export type adminLayoutUserProps={
+    name: string
+    email: string
+    profilePicture?: string
+}

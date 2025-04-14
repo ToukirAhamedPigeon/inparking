@@ -10,13 +10,9 @@ import {
   import { ChevronDown, ChevronUp, LogOut } from 'lucide-react'
 import LogoutButton from '@/components/custom/LogoutButton'
 import { useState } from 'react'
-  
+import { adminLayoutUserProps } from '@/types'
   type Props = {
-    user: {
-      name: string
-      email: string
-      profilePicture?: string
-    }
+    user: adminLayoutUserProps
   }
 
   
@@ -35,7 +31,7 @@ import { useState } from 'react'
           </div>
         </DropdownMenuTrigger>
   
-        <DropdownMenuContent className="w-64 p-2 space-y-2">
+        <DropdownMenuContent className="w-64 p-2 space-y-2 bg-[radial-gradient(circle_at_bottom_left,_#FFFFFF,_#faf6e2)]">
           {/* Top Section */}
           <div className="flex flex-col items-center text-center px-2 py-3">
             <Avatar className="w-14 h-14 mb-2">

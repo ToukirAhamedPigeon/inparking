@@ -21,7 +21,7 @@ export default function LogoutButton({ variant, className, children }: { variant
   }
 
   return (
-    <Button variant={variant} onClick={handleLogout} className={cn(className)}>
+    <Button variant={variant} onClick={handleLogout} className={cn(className,'')}>
       {children}
     </Button>
   )
