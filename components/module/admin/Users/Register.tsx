@@ -57,6 +57,13 @@ export default function Register() {
   const profilePic = watch('profilePicture')
   const email = watch('email')
 
+  const clearImage = () => {
+    setValue('profilePicture', undefined)
+    setPreview(null)
+    setError('profilePicture', { message: '' })
+  }
+  
+
   // Dropzone Handler
 
   const onDrop = (acceptedFiles: File[], fileRejections: any[]) => {
@@ -255,7 +262,7 @@ export default function Register() {
                 <p className="text-sm text-gray-500">Drag & drop or click to select a profile picture</p>
 
                 {preview && (
-                  <div className="mt-2 flex items-center justify-center">
+                  <div className="mt-2 flex flex-col items-center justify-center gap-2">
                     <Image
                       src={preview}
                       alt="Preview"
@@ -263,6 +270,19 @@ export default function Register() {
                       height={100}
                       className="rounded-md border shadow"
                     />
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      onClick={
+                        (e) => {
+                          e.stopPropagation()
+                          clearImage()
+                        }
+                      }
+                    >
+                      Remove Image
+                    </Button>
                   </div>
                 )}
               </div>
