@@ -30,9 +30,6 @@ export async function POST(req: Request) {
     const authUserId = await getAuthUserIdFromCookie()
 
 
-    // Upload image
-    
-
     // Save user
     const newUser = await User.create({
       name,
@@ -42,17 +39,18 @@ export async function POST(req: Request) {
       role,
       createdBy: authUserId,
     })
+    if (file && file.size > 0 && file.type.startsWith('image/')) {
+        const { imageDoc }: { imageDoc: typeof Image.prototype } = await uploadAndResizeImage({
+            file,
+            modelFolder: 'users',
+            modelType: EModelType.User,
+            modelId: newUser._id,
+        })
 
-    const { imageDoc }: { imageDoc: typeof Image.prototype } = await uploadAndResizeImage({
-        file,
-        modelFolder: 'users',
-        modelType: EModelType.User,
-        modelId: newUser._id,
-      })
-
-    // Update user with profile picture
-    newUser.profilePicture = imageDoc._id
-    await newUser.save()
+        // Update user with profile picture
+        newUser.profilePicture = imageDoc._id
+        await newUser.save()
+    }
 
     // Log action
     await logAction({

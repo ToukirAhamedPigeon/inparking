@@ -127,6 +127,7 @@ export default function Register() {
     const emailTaken = await checkEmailExists(data.email)
     if (emailTaken) {
       setError('email', { type: 'manual', message: 'Email already exists' })
+      setSubmitLoading(false)
       return
     }
   
@@ -204,7 +205,7 @@ export default function Register() {
               </svg>
             )}
           </div>
-          {emailTaken && <p className="text-red-500 text-sm">Email already exists</p>}
+          {emailTaken && !errors.email && <p className="text-red-500 text-sm">Email already exists</p>}
           {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
         </div>
 
