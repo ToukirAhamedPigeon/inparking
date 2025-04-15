@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
     // (No configuration needed if they're in public/)
     
     // For external domains (including localhost)
-    domains: ['localhost'],
+    domains: ['localhost','inparking.pigeonic.com'],
     
     // Alternative: More granular control with remotePatterns
     remotePatterns: [
