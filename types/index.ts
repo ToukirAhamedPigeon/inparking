@@ -123,4 +123,5 @@ export type adminLayoutUserProps={
     name: string
     email: string
     profilePicture?: string
+    role: EUserRole
 }

@@ -33,13 +33,14 @@ import { adminLayoutUserProps } from '@/types'
   
         <DropdownMenuContent className="w-64 p-2 space-y-2 bg-[radial-gradient(circle_at_bottom_left,_#FFFFFF,_#faf6e2)]">
           {/* Top Section */}
-          <div className="flex flex-col items-center text-center px-2 py-3">
+          <div className="flex flex-col items-center text-center gap-1 px-2 py-3">
             <Avatar className="w-14 h-14 mb-2">
               <AvatarImage src={user.profilePicture || '/default-avatar.png'} alt={user.name} />
               <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="font-medium">{user.name}</div>
             <div className="text-xs text-muted-foreground">{user.email}</div>
+            <div className="text-xs font-medium capitalize">{user.role}</div>
           </div>
   
           <DropdownMenuSeparator />

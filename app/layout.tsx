@@ -4,6 +4,7 @@ import "./globals.css";
 import Providers from "@/providers";
 import Footer from "@/components/custom/Footer";
 import RouteProgress from "@/components/module/admin/layout/RouteProgress";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -47,6 +48,7 @@ export default function RootLayout({
         <Providers>
           <RouteProgress color="#3b82f6" />
           {children}
+          <Toaster richColors position="top-right" />
         </Providers>
       </body>
     </html>

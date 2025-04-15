@@ -3,6 +3,7 @@ import Log from '@/models/Log'
 import { EActionType, ILog } from '@/types'
 import dbConnect from './dbConnect'
 import { Types } from 'mongoose'
+import { getAuthUserIdFromCookie } from '@/lib/getAuthUser'
 
 interface LogInput {
   detail?: string;
@@ -10,7 +11,6 @@ interface LogInput {
   actionType: EActionType;
   collectionName: string;
   objectId?: string;
-  createdBy: Types.ObjectId | string; // support both formats
 }
 
 export async function logAction({
@@ -19,10 +19,11 @@ export async function logAction({
   actionType,
   collectionName,
   objectId,
-  createdBy,
 }: LogInput): Promise<ILog | null> {
   try {
     await dbConnect();
+
+    const authUserId = await getAuthUserIdFromCookie()
 
     const log = await Log.create({
       detail,
@@ -30,7 +31,7 @@ export async function logAction({
       actionType,
       collectionName,
       objectId,
-      createdBy: new Types.ObjectId(createdBy),
+      createdBy: authUserId,
     });
 
     return log;

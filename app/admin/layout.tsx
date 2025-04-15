@@ -11,6 +11,7 @@ import FullPageLoader from '@/components/custom/FullPageLoader'
 import Header from '@/components/module/admin/layout/Header'
 import Main from '@/components/module/admin/layout/Main'
 import RouteProgress from '@/components/module/admin/layout/RouteProgress'
+import { Toaster } from 'sonner'
 export default function AdminNavbarLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth()
   if (loading) return <FullPageLoader />
@@ -31,7 +32,12 @@ export default function AdminNavbarLayout({ children }: { children: React.ReactN
           </Main>
         </div>
 
-        <Footer footerClasses="flex justify-end bottom-0 w-full py-1 text-center md:text-right px-4 text-xs text-gray-600 bg-transparent border-t border-gray-200 overflow-hidden" linkClasses="text-red-600 hover:underline" showVersion={true} />
+        <Footer
+        footerClasses="w-full py-1 text-center px-4 text-xs text-gray-600 bg-transparent border-t border-gray-200 overflow-hidden flex justify-center md:justify-end"
+        linkClasses="text-red-600 hover:underline"
+        showVersion={true}
+      />
+      <Toaster richColors position="top-right" />
       </div>
     </SidebarProvider>
   )
