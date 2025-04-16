@@ -12,10 +12,13 @@ import Header from '@/components/module/admin/layout/Header'
 import Main from '@/components/module/admin/layout/Main'
 import RouteProgress from '@/components/module/admin/layout/RouteProgress'
 import { Toaster } from 'sonner'
+
 export default function AdminNavbarLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth()
   if (loading) return <FullPageLoader />
-  if (!user) redirect('/signin')
+  if (!user) {
+    redirect('/signin')
+  }
 
   return (
     <SidebarProvider>

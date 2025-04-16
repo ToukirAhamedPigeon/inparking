@@ -55,7 +55,7 @@ export async function uploadAndResizeImage({ file, modelFolder, modelType, model
    const imageDoc: typeof Image.prototype = await Image.create({
       imageUrl,
       imageTitle: fileName,
-      modelType: EModelType.User,
+      modelType: modelType,
       modelId: modelId,
       createdBy: authUserId,
     })

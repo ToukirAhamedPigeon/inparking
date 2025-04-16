@@ -5,41 +5,50 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ChevronRight, ChevronUp, ChevronDown } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useAuth } from '@/contexts/AuthContext';
+import { EUserRole } from '@/types';
 
 const menuItems = [
-  { label: 'Dashboard', icon: '🏠', basePath: '/admin/dashboard', children: [] },
+  { label: 'Dashboard', icon: '🏠', basePath: '/admin/dashboard', children: [], role: [EUserRole.ADMIN, EUserRole.DEVELOPER, EUserRole.USER] },
   {
     label: 'Zones', icon: '📍', basePath: '/admin/zones', children: [
       { label: 'List', basePath: '/admin/zones/list' },
       { label: 'Add', basePath: '/admin/zones/add' },
-    ]
+    ], role: [EUserRole.ADMIN, EUserRole.DEVELOPER]
+  },
+  {
+    label: 'Routes', icon: '🚗', basePath: '/admin/routes', children: [
+      { label: 'List', basePath: '/admin/routes/list' },
+      { label: 'Add', basePath: '/admin/routes/add' },
+    ], role: [EUserRole.ADMIN, EUserRole.DEVELOPER]
   },
   {
     label: 'Slots', icon: '🅿️', basePath: '/admin/slots', children: [
       { label: 'List', basePath: '/admin/slots/list' },
       { label: 'Add', basePath: '/admin/slots/add' },
-    ]
+    ], role: [EUserRole.ADMIN, EUserRole.DEVELOPER]
   },
   {
     label: 'Allotments', icon: '📋', basePath: '/admin/allotments', children: [
       { label: 'List', basePath: '/admin/allotments/list' },
       { label: 'Add', basePath: '/admin/allotments/add' },
-    ]
+    ], role: [EUserRole.ADMIN, EUserRole.DEVELOPER]
   },
   {
     label: 'Users', icon: '👥', basePath: '/admin/users', children: [
       { label: 'List', basePath: '/admin/users/list' },
       { label: 'Register', basePath: '/admin/users/register' },
-    ]
+    ], role: [EUserRole.ADMIN, EUserRole.DEVELOPER]
   },
   {
-    label: 'Logs', icon: '📝', basePath: '/admin/logs', children: []
+    label: 'Logs', icon: '📝', basePath: '/admin/logs', children: [], role: [EUserRole.ADMIN, EUserRole.DEVELOPER]
   }
 ];
 
 export default function Nav({ onLinkClick }: { onLinkClick?: () => void }) {
   const pathname = usePathname();
   const [openMenus, setOpenMenus] = useState<string[]>([]);
+  const { user } = useAuth();
 
   const toggleMenu = (label: string) => {
     setOpenMenus((prev) =>
@@ -54,9 +63,11 @@ export default function Nav({ onLinkClick }: { onLinkClick?: () => void }) {
 
   return (
     <nav className="space-y-0 py-6 text-gray-600">
-      {menuItems.map(({ label, icon, basePath, children }) => {
+      {menuItems.map(({ label, icon, basePath, children, role }) => {
         const alwaysOpen = isActiveMenu(basePath);
         const isOpen = openMenus.includes(label) || alwaysOpen;
+
+        if (!role.includes(user?.role as EUserRole)) return null;
 
         return (
           <div key={label}>

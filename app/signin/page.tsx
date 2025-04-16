@@ -34,7 +34,7 @@ export default function SignInPage() {
     setError(null)
   
     try {
-      const res = await fetch('/api/auth/signin', {
+      const res = await fetch('/api/signin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -48,6 +48,7 @@ export default function SignInPage() {
       const responseData = await res.json()
 
     // Save authUser in localStorage
+    console.log('responseData', responseData)
     localStorage.setItem('authUser', JSON.stringify(responseData.user))
 
     // Optionally update context if you use AuthContext

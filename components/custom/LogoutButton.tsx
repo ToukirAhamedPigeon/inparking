@@ -4,14 +4,21 @@
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '../ui/button'
 import { cn } from '@/lib/utils'
-
+import Cookies from 'js-cookie'
+import api from '@/lib/axios'
+import { useRouter } from 'next/navigation'
 export default function LogoutButton({ variant, className, children }: { variant: 'default' | 'outline' | 'ghost' | 'link', className?: string, children: React.ReactNode }) {
+  const router = useRouter()
   const { setUser } = useAuth()
-
   const handleLogout = async () => {
     try {
-      await fetch('/api/auth/logout', { method: 'POST' })
-      if (setUser) setUser(null)
+      // Token is managed automatically by HttpOnly cookie
+      await api.post('/auth/logout') // No need to pass token in the headers
+      setUser(null)
+      Cookies.remove('inparking_token') // Clear the cookie manually if needed
+      localStorage.removeItem('authUser')
+      // Redirect to signin page
+     // router.push('/signin')
     } catch (error) {
       console.error('Logout failed', error)
     }

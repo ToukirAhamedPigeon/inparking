@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
+import api from '@/lib/axios'
 import { ColumnDef, OnChangeFn, SortingState } from '@tanstack/react-table'
 import {
   flexRender,
@@ -22,6 +22,8 @@ import { formatDateTime } from '@/lib/formatDate'
 import { useRouter } from 'next/navigation'
 import Modal from '@/components/custom/Modal'
 import Detail from './Detail'
+import { toast } from 'sonner'
+import ConfirmDialog from '@/components/custom/ConfirmDialog'
 
 export default function UserListTable() {
   const { user } = useAuth()
@@ -35,11 +37,18 @@ export default function UserListTable() {
   const router = useRouter()
   const [isModalOpen, setIsModalOpen] = useState(false)  // State to track modal visibility
   const [selectedUser, setSelectedUser] = useState<any>(null)  // State to store selected user details
+  const [userToDelete, setUserToDelete] = useState<string | null>(null)
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false)
+  const authUser = localStorage.getItem('authUser')
+  const token = JSON.parse(authUser || '{}').token
 
   const fetchData = async () => {
     setLoading(true)
     try {
-      const res = await axios.get('/api/users', {
+      const res = await api.get('/users', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
         params: {
           q: globalFilter,
           page: pageIndex + 1,
@@ -57,11 +66,43 @@ export default function UserListTable() {
 
   const fetchUserDetail = async (id: string) => {
     try {
-      const res = await axios.get(`/api/users/${id}`)
+      const res = await api.get(`/users/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+      })
       setSelectedUser(res.data)
       setIsModalOpen(true)  // Open modal when user data is fetched
     } catch (error) {
       console.error('Error fetching user detail:', error)
+    }
+  }
+  const confirmDeleteUser = (id: string) => {
+    setUserToDelete(id)
+    setConfirmDialogOpen(true)
+  }
+  const handleDeleteUser = async () => {
+    if (!userToDelete) return
+    try {
+      const res = await api.delete(`/users/${userToDelete}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+      })
+      const { status, message } = res.data
+
+      if (status === 'deleted') {
+        toast.success('User deleted successfully')
+      } else if (status === 'inactive') {
+        toast.warning('User has past activity, made inactive')
+      }
+      fetchData()
+    } catch (error) {
+      console.error('Error deleting user:', error)
+      toast.error('Something went wrong while deleting user')
+    } finally {
+      setUserToDelete(null)
+      setConfirmDialogOpen(false)
     }
   }
 
@@ -86,7 +127,7 @@ export default function UserListTable() {
           <Button size="sm" variant="warning">
             <FaEdit /> Edit
           </Button>
-          <Button size="sm" variant="destructive">
+          <Button size="sm" variant="destructive" onClick={() => confirmDeleteUser(row.original._id)}>
             <FaTrash /> Delete
           </Button>
         </div>
@@ -182,8 +223,10 @@ export default function UserListTable() {
       </div>
 
       <div className="overflow-auto rounded-xl shadow">
-        {loading ? (
-          <div className="text-center py-10 text-gray-500">Loading users...</div>
+      {loading ? (
+          <div className="flex items-center justify-center py-10">
+            <div className="h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          </div>
         ) : (
           <table className="table-auto w-full text-left border">
             <thead>
@@ -253,6 +296,14 @@ export default function UserListTable() {
     <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="User Details">
       <Detail user={selectedUser} />
     </Modal>
+    <ConfirmDialog
+        open={confirmDialogOpen}
+        onCancel={() => setConfirmDialogOpen(false)}
+        onConfirm={handleDeleteUser}
+        title="Confirm Deletion"
+        description="Are you sure you want to delete this user?"
+        confirmLabel="Delete"
+      />
     </motion.div>
   )
 }

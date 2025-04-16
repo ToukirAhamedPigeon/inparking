@@ -8,8 +8,9 @@ import dbConnect from '@/lib/dbConnect'
 import { comparePassword } from '@/lib/hash'
 import { signInSchema } from '@/lib/validations'
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'
+const JWT_SECRET = process.env.ACCESS_SECRET || 'your-secret-key'
 const COOKIE_NAME = 'inparking_token'
+
 
 export async function POST(req: Request) {
   try {
@@ -56,7 +57,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       message: 'Signed in successfully',
-      user: { id: user._id, name: user.name, role: user.role, email: user.email, profilePicture: user.profilePicture?.imageUrl }
+      user: { id: user._id, name: user.name, role: user.role, email: user.email, profilePicture: user.profilePicture?.imageUrl, token: token }
     })
 
   } catch (error) {

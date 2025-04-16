@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useEffect, useState } from 'react'
-import { IUser, EUserRole } from '@/types'
+import { EUserRole } from '@/types'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -12,6 +12,8 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@
 import Dropzone from 'react-dropzone'
 import Image from 'next/image'
 import { toast } from 'sonner'
+import Cookies from 'js-cookie'
+import api from '@/lib/axios'
 
 const schema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -24,6 +26,9 @@ const schema = z.object({
   path: ['confirmPassword'],
   message: "Passwords don't match",
 })
+
+const authUser = localStorage.getItem('authUser')
+const token = JSON.parse(authUser || '{}').token
 
 type FormData = z.infer<typeof schema>
 
@@ -101,8 +106,12 @@ export default function Register() {
   // Email uniqueness check
   const checkEmailExists = async (email: string): Promise<boolean> => {
     try {
-      const res = await fetch(`/api/auth/check-email?email=${email}`)
-      const data = await res.json()
+      const res = await api.get(`/auth/check-email?email=${email}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+      })
+      const data = res.data
       return data.exists
     } catch (error) {
       console.error('Error checking email:', error)
@@ -146,15 +155,18 @@ export default function Register() {
       formData.append('role', data.role)
       if (data.profilePicture) {
         formData.append('profilePicture', data.profilePicture)
-      }  
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        body: formData
+      }
+
+      const res = await api.post('/auth/register', formData, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
       })
   
-      const result = await res.json()
+      const result = res.data
   
-      if (!res.ok) {
+      if (!result) {
         // Backend returns a message for display on error
         throw new Error(result.message || 'Registration failed')
       }

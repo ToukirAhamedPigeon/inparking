@@ -2,18 +2,20 @@
 
 import Breadcrumb from '@/components/module/admin/layout/Breadcrumb';
 import React from 'react';
-import { EUserRole } from '@/types';
 import Protected from '@/components/custom/Protected';
-export default function List(){
+import { EUserRole } from '@/types';
+
+export default function Add(){
     return (
         <>
         <Protected roles={[EUserRole.ADMIN, EUserRole.DEVELOPER]} />
         <div className='flex flex-col gap-4'>
         <Breadcrumb
-        title="Allotments"
+        title="Add Route"
         showTitle={true}
         items={[
-          { label: 'Allotments' },
+          { label: 'Routes', href: '/admin/routes/list' },
+          { label: 'Add Route' },
         ]}
       />
       </div>
