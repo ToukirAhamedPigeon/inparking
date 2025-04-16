@@ -174,9 +174,9 @@ export default function UserListTable() {
           className="w-1/3"
         />
         <div className="flex gap-2">
-          <Button variant="success" onClick={() => router.push('/admin/users/register')}><FaPlus /> Register New User</Button>
-          <Button variant="info" onClick={() => window.print()}><FaPrint /> Print</Button>
-          <Button variant="success" onClick={exportExcel}><FaFileExcel /> Export Excel</Button>
+          <Button variant="success" onClick={() => router.push('/admin/users/register')}><FaPlus /> <span className='hidden md:block'>Register New User</span></Button>
+          <Button variant="info" onClick={() => window.print()}><FaPrint /> <span className='hidden md:block'>Print</span></Button>
+          <Button variant="success" onClick={exportExcel}><FaFileExcel /> <span className='hidden md:block'>Export Excel</span></Button>
         </div>
       </div>
 
