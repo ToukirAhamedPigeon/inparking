@@ -5,7 +5,7 @@ import '@/models/Image'
 import { Types } from 'mongoose'
 
 export async function GET(
-    req: NextRequest,
+    request: NextRequest,
     { params }: { params: { id: string } }
   ) {
   await dbConnect()
