@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import dbConnect from '@/lib/dbConnect'
 import User from '@/models/User'
 import '@/models/Image'
@@ -9,14 +9,14 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   const { id } = params
 
   if (!Types.ObjectId.isValid(id)) {
-    return Response.json({ error: 'Invalid user ID' }, { status: 400 })
+    return NextResponse.json({ error: 'Invalid user ID' }, { status: 400 })
   }
 
   try {
     const user = await User.findById(id).populate('profilePicture').lean()
 
     if (!user) {
-      return Response.json({ error: 'User not found' }, { status: 404 })
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
     const formattedUser = {
@@ -24,9 +24,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       profilePictureUrl: Array.isArray(user) ? user[0]?.profilePicture?.imageUrl || '/assets/policeman.png' : user.profilePicture?.imageUrl || '/assets/policeman.png',
     }
 
-    return Response.json(formattedUser)
+    return NextResponse.json(formattedUser)
   } catch (err) {
-    console.error(err)
-    return Response.json({ error: 'Server error' }, { status: 500 })
+    console.error('Error fetching user detail:', err)
+    return NextResponse.json({ error: 'Server error' }, { status: 500 })
   }
 }
