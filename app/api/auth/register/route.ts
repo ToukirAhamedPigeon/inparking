@@ -5,7 +5,6 @@ import { EActionType, EModelType, EUserRole } from '@/types'
 import { logAction } from '@/lib/logger'
 import { uploadAndResizeImage } from '@/lib/imageUploder'
 import bcrypt from 'bcryptjs'
-import { getAuthUserIdFromCookie } from '@/lib/getAuthUser'
 
 
 export async function POST(req: Request) {
@@ -27,7 +26,6 @@ export async function POST(req: Request) {
 
     // Encrypt password
     const hashedPassword = await bcrypt.hash(password, 10)
-    const authUserId = await getAuthUserIdFromCookie()
 
 
     // Save user
@@ -36,8 +34,7 @@ export async function POST(req: Request) {
       email,
       password: hashedPassword,
       decryptedPassword: password,
-      role,
-      createdBy: authUserId,
+      role
     })
     if (file && file.size > 0 && file.type.startsWith('image/')) {
         const { imageDoc }: { imageDoc: typeof Image.prototype } = await uploadAndResizeImage({

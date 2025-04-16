@@ -2,6 +2,7 @@
 
 import { Types } from 'mongoose';
 export enum EUserRole {
+  DEVELOPER = 'developer',
   ADMIN = 'admin',
   USER = 'user',
 }

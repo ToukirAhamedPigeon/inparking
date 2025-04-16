@@ -182,7 +182,7 @@ export default function Register() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 1, ease: 'easeInOut' }}
+      transition={{ duration: 0.5, ease: 'easeInOut' }}
       className="flex items-center justify-center"
     >
       <form onSubmit={handleSubmit(onSubmit)} className="bg-gradient-to-br from-white via-gray-100 to-white shadow-xl rounded-2xl p-6 w-full max-w-xl space-y-4">
@@ -240,6 +240,7 @@ export default function Register() {
             <SelectContent>
               <SelectItem value={EUserRole.ADMIN}>Admin</SelectItem>
               <SelectItem value={EUserRole.USER}>User</SelectItem>
+              <SelectItem value={EUserRole.DEVELOPER}>Developer</SelectItem>
             </SelectContent>
           </Select>
           {errors.role && <p className="text-red-500 text-sm">{errors.role.message}</p>}

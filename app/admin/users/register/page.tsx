@@ -12,10 +12,10 @@ export default function Page(){
           { label: 'Users', href: '/admin/users/list' },
           { label: 'Register' },
         ]}
-      />
-      <div className='flex flex-col gap-4'>
-        <Register />
-      </div>
+        />
+        <div className='flex flex-col gap-4'>
+          <Register />
+        </div>
       </div>
     );
 };
