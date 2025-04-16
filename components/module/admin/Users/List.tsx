@@ -21,6 +21,7 @@ import Fancybox from '@/components/custom/FancyBox'
 import { formatDateTime } from '@/lib/formatDate'
 import { useRouter } from 'next/navigation'
 import Modal from '@/components/custom/Modal'
+import Detail from './Detail'
 
 export default function UserListTable() {
   const { user } = useAuth()
@@ -249,7 +250,9 @@ export default function UserListTable() {
         </div>
       </div>
     {/* Modal to display user details */}
-    <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} user={selectedUser} />
+    <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="User Details">
+      <Detail user={selectedUser} />
+    </Modal>
     </motion.div>
   )
 }
