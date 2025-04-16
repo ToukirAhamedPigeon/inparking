@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import dbConnect from '@/lib/dbConnect'
 import User from '@/models/User'
-import '@/models/Image'
+import Image from '@/models/Image'
 import { Types } from 'mongoose'
 
 export async function GET(
