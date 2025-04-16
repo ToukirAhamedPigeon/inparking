@@ -2,6 +2,7 @@
 import { NextRequest } from 'next/server'
 import dbConnect from '@/lib/dbConnect'
 import User from '@/models/User'
+import Image from '@/models/Image'
 
 export async function GET(req: NextRequest) {
   await dbConnect()
