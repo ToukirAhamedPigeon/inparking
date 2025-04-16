@@ -5,11 +5,11 @@ import '@/models/Image'
 import { Types } from 'mongoose'
 
 export async function GET(
-    request: NextRequest,
-    { params }: { params: { id: string } }
+    request: Request,
+    { params }: { params: Promise<{ id: string }> }
   ) {
+    const id = (await params).id
   await dbConnect()
-  const { id } = params
 
   if (!Types.ObjectId.isValid(id)) {
     return NextResponse.json({ error: 'Invalid user ID' }, { status: 400 })
