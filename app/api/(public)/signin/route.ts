@@ -9,7 +9,7 @@ import { comparePassword } from '@/lib/hash'
 import { signInSchema } from '@/lib/validations'
 
 const JWT_SECRET = process.env.ACCESS_SECRET || 'your-secret-key'
-const COOKIE_NAME = 'inparking_token'
+const COOKIE_NAME = 'inparking_access_token'
 
 
 export async function POST(req: Request) {

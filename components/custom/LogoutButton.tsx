@@ -15,7 +15,7 @@ export default function LogoutButton({ variant, className, children }: { variant
       // Token is managed automatically by HttpOnly cookie
       await api.post('/auth/logout') // No need to pass token in the headers
       setUser(null)
-      Cookies.remove('inparking_token') // Clear the cookie manually if needed
+      Cookies.remove('inparking_access_token') // Clear the cookie manually if needed
       localStorage.removeItem('authUser')
       // Redirect to signin page
      // router.push('/signin')

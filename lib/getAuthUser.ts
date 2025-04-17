@@ -3,7 +3,7 @@ import { cookies } from 'next/headers'
 import jwt from 'jsonwebtoken'
 
 const JWT_SECRET = process.env.ACCESS_SECRET || 'your-secret-key'
-const COOKIE_NAME = 'inparking_token'
+const COOKIE_NAME = 'inparking_access_token'
 
 export async function getAuthUserIdFromCookie(): Promise<string | null> {
   const cookieStore = await cookies()

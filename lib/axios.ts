@@ -24,7 +24,7 @@ const processQueue = (error: any, token: string | null = null) => {
 
 api.interceptors.request.use(
   (config) => {
-    const token = Cookies.get('inparking_token')
+    const token = Cookies.get('inparking_access_token')
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`
     }
@@ -58,7 +58,7 @@ api.interceptors.response.use(
         const response = await axios.post('/api/auth/refresh', {}, { withCredentials: true })
 
         const newToken = response.data.token
-        Cookies.set('inparking_token', newToken)
+        Cookies.set('inparking_access_token', newToken)
 
         processQueue(null, newToken)
 

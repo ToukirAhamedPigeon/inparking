@@ -7,7 +7,7 @@ const ACCESS_SECRET = new TextEncoder().encode(process.env.ACCESS_SECRET!) // âœ
 
 export async function POST() {
   const cookieStore = await cookies() // no need for await
-  const token = cookieStore.get('inparking_token')?.value
+  const token = cookieStore.get('inparking_access_token')?.value
 
   if (!token) {
     return NextResponse.json({ message: 'Unauthorized: No token found' }, { status: 401 })
@@ -17,7 +17,7 @@ export async function POST() {
     await jwtVerify(token, ACCESS_SECRET)
 
     // Clear token cookie
-    cookieStore.set('inparking_token', '', { path: '/', maxAge: 0 })
+    cookieStore.set('inparking_access_token', '', { path: '/', maxAge: 0 })
 
     return NextResponse.json({ message: 'Logged out successfully' })
   } catch (err) {

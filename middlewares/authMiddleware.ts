@@ -5,7 +5,7 @@ import { EUserRole } from '@/types'
 const JWT_SECRET = new TextEncoder().encode(process.env.ACCESS_SECRET!) // Use ACCESS_SECRET here
 
 export async function authMiddleware(request: NextRequest) {
-  const token = request.cookies.get('inparking_token')?.value
+  const token = request.cookies.get('inparking_access_token')?.value
   const pathname = request.nextUrl.pathname
 
   const isAuthPage = pathname.startsWith('/signin')

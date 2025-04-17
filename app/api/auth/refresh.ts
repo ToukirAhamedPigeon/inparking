@@ -32,7 +32,7 @@ export async function POST() {
     const res = NextResponse.json({ token: newAccessToken }, { status: 200 })
 
     // Set new access token cookie
-    res.cookies.set('inparking_token', newAccessToken, {
+    res.cookies.set('inparking_access_token', newAccessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       path: '/',
