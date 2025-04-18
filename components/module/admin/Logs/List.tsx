@@ -4,21 +4,19 @@ import { flexRender, getCoreRowModel, getPaginationRowModel, getSortedRowModel, 
 import { motion } from 'framer-motion'
 import { FaSort, FaSortUp, FaSortDown } from 'react-icons/fa'
 import { useAuth } from '@/contexts/AuthContext'
-import { EUserRole, EActionType, ILog } from '@/types'
+import { ILog, EActionType } from '@/types'
 import { useTable } from '@/hooks/useTable'
 import { useDetailModal } from '@/hooks/useDetailModal'
 import Modal from '@/components/custom/Modal'
 import {RowActions,IndexCell,TableHeaderActions,TablePaginationFooter,TableLoader} from '@/components/custom/Table'
 import { formatDateTime } from '@/lib/formatDate'
 import { capitalize, exportExcel } from '@/lib/helpers'
-import Fancybox from '@/components/custom/FancyBox'
 import { Badge } from '@/components/ui/badge'
 import api from '@/lib/axios'
 import Detail from './Detail'
 
 export default function LogListTable() {
   //Auth Hook
-  const { user } = useAuth()
   const authUser = localStorage.getItem('authUser')
   const token = JSON.parse(authUser || '{}').token
 
@@ -38,6 +36,7 @@ export default function LogListTable() {
           sortOrder: sortOrder || 'desc',
         },
       })
+      console.log(res.data)
   
       return {
         data: res.data.logs as ILog[],
@@ -89,8 +88,47 @@ export default function LogListTable() {
     },
     {
       header: 'Object Name',
-      accessorKey: 'relatedName',
+      accessorKey: 'changes',
+      cell: ({ row }) => {
+        const changes = JSON.parse(row.original.changes as string)
+        if (row.original.actionType === EActionType.CREATE || row.original.actionType === EActionType.UPDATE) {
+          if (row.original.collectionName === 'Allotment') {
+            return changes.after.guestName
+          }
+          else if (row.original.collectionName === 'Image') {
+            return changes.after.imageTitle
+          }
+          else if (row.original.collectionName === 'Route') {
+            return changes.after.fromAddress+' to '+changes.after.toAddress
+          }
+          else if (row.original.collectionName === 'Slot') {
+            return changes.after.slotNumber
+          }
+          else {
+            return changes.after.name
+          }
+        }
+        else if (row.original.actionType === EActionType.DELETE) {
+          if (row.original.collectionName === 'Allotment') {
+            return changes.before.guestName
+          }
+          else if (row.original.collectionName === 'Image') {
+            return changes.before.imageTitle
+          }
+          else if (row.original.collectionName === 'Route') {
+            return changes.before.fromAddress+' to '+changes.before.toAddress
+          }
+          else if (row.original.collectionName === 'Slot') {
+            return changes.before.slotNumber
+          }
+          else {
+            return changes.before.name
+          }
+        }
+        return 'N/A'
+      },
     },
+
     {
       header: 'Created By',
       accessorKey: 'createdBy.name',
@@ -132,8 +170,8 @@ export default function LogListTable() {
       />
 
       {/* Table */}
+      <TableLoader loading={loading} />
       <div className="relative overflow-auto rounded-xl shadow">
-        <TableLoader loading={loading} />
         <table className="table-auto w-full text-left border">
           <thead>
             {table.getHeaderGroups().map(headerGroup => (

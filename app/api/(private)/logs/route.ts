@@ -55,7 +55,7 @@ export async function GET(req: NextRequest) {
 
     const [logs, totalCount] = await Promise.all([
       Log.find(searchQuery)
-        .sort({ [sortBy]: sortOrder })  // 👈 dynamic sorting
+        .sort({ [sortBy]: sortOrder }) 
         .skip(skip)
         .limit(limit)
         .populate('createdBy', 'name')
@@ -63,28 +63,7 @@ export async function GET(req: NextRequest) {
       Log.countDocuments(searchQuery),
     ])
 
-    const formatted = await Promise.all(
-        logs.map(async log => {
-          const model = modelMap[log.collectionName]
-      
-          let relatedName = ''
-      
-          if (model) {
-            const relatedDoc = await model.findById(log.objectId).lean()
-            if (relatedDoc) {
-              relatedName =
-                relatedDoc.name || relatedDoc.title || relatedDoc.username || ''
-            }
-          }
-      
-          return {
-            ...log,
-            relatedName, // Add this to enrich your frontend
-          }
-        })
-      )
-
-    return NextResponse.json({ logs: formatted, totalCount })
+    return NextResponse.json({ logs, totalCount })
 
   } catch (err) {
     console.error('Auth or DB error:', err)

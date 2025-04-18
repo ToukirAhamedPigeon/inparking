@@ -16,7 +16,7 @@ import { EActionType, EModelType, EUserRole } from '@/types'
 import bcrypt from 'bcryptjs'
 import { deleteImage, uploadAndResizeImage } from '@/lib/imageUploder'
 import { getCreatedAtId } from '@/lib/formatDate'
-
+import { omitFields } from '@/lib/helpers'
 export async function GET(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
@@ -93,10 +93,12 @@ export async function DELETE(req: NextRequest, context: { params: { id: string }
     if (referenced) {
       user.isActive = false
       await user.save()
+
+      const afterUser = await User.findById(userId)
       // Log inactivation
       await logAction({
         detail: `User inactivated: ${user.name}`,
-        changes: JSON.stringify({ before: user, after: { isActive: false } }),
+        changes: JSON.stringify({ before:omitFields(user.toObject?.() || user, ['password', 'decryptedPassword','createdAtId','__v']), after: omitFields(afterUser.toObject?.() || afterUser, ['password', 'decryptedPassword','createdAtId','__v']) }),
         actionType: EActionType.UPDATE,
         collectionName: 'User',
         objectId: user._id.toString(),
@@ -117,7 +119,7 @@ export async function DELETE(req: NextRequest, context: { params: { id: string }
       await User.findByIdAndDelete(userId)
       await logAction({
         detail: `User deleted: ${user.name}`,
-        changes: JSON.stringify({ before: user }),
+        changes: JSON.stringify({ before: omitFields(user.toObject?.() || user, ['password', 'decryptedPassword','createdAtId','__v']) }),
         actionType: EActionType.DELETE,
         collectionName: 'User',
         objectId: user._id.toString(),
@@ -188,7 +190,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     const updatedUser = await User.findByIdAndUpdate(userId, updates, { new: true, strict: false })
     await logAction({
       detail: `User updated: ${updatedUser.name}`,
-      changes: JSON.stringify({ before: user, after: updates }),
+      changes: JSON.stringify({ before: omitFields(user.toObject?.() || user, ['password', 'decryptedPassword','createdAtId','__v']), after: omitFields(updatedUser.toObject?.() || updatedUser, ['password', 'decryptedPassword','createdAtId','__v']) }),
       actionType: EActionType.UPDATE,
       collectionName: 'User',
       objectId: userId,

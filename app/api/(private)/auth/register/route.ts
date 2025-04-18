@@ -7,7 +7,7 @@ import { uploadAndResizeImage } from '@/lib/imageUploder'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { getCreatedAtId } from '@/lib/formatDate'
-
+import { omitFields } from '@/lib/helpers'
 
 export async function POST(req: Request) {
   const authHeader = req.headers.get('authorization')
@@ -62,7 +62,7 @@ export async function POST(req: Request) {
           // Log action
           await logAction({
             detail: `User created: ${newUser.name}`,
-            changes: JSON.stringify({ after: newUser }),
+            changes: JSON.stringify({ after: omitFields(newUser.toObject?.() || newUser, ['password', 'decryptedPassword','createdAtId','__v']) }),
             actionType: EActionType.CREATE,
             collectionName: 'User',
             objectId: newUser._id.toString()

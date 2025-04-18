@@ -48,7 +48,7 @@ export default function UserListTable() {
   
       return {
         data: res.data.users as IUser[],
-        total: res.data.total,
+        total: res.data.totalCount,
       }
     },
   })
@@ -165,8 +165,8 @@ export default function UserListTable() {
       />
 
       {/* Table */}
+      <TableLoader loading={loading} />
       <div className="relative overflow-auto rounded-xl shadow">
-        <TableLoader loading={loading} />
         <table className="table-auto w-full text-left border">
           <thead>
             {table.getHeaderGroups().map(headerGroup => (

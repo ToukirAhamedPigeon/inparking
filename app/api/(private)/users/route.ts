@@ -50,7 +50,6 @@ export async function GET(req: NextRequest) {
       ...user,
       profilePictureUrl: user.profilePicture?.imageUrl || '/assets/policeman.png',
     }))
-
     return NextResponse.json({ users: formatted, totalCount })
 
   } catch (err) {

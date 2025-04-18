@@ -155,12 +155,13 @@ export function TablePaginationFooter({
 
 export function TableLoader({loading}: {loading: boolean}){
   return (
-      <div className={`absolute inset-0 z-10 flex justify-center transition-opacity ${loading ? 'block' : 'hidden'}`}>
-          <div className="absolute inset-0 bg-white bg-opacity-60"></div> {/* White semi-transparent overlay */}
-          <div className="relative mt-[200px] z-20">
-            <div className="h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-          </div>
-        </div>
-  );
+    loading ? (
+      <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="absolute inset-0 bg-white bg-opacity-60"></div>
+        <div className="relative z-10">
+        <div className="h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    </div>
+  ) : null)
 };
   
