@@ -19,7 +19,8 @@ import { getCreatedAtId } from '@/lib/formatDate'
 import { omitFields } from '@/lib/helpers'
 
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req:NextRequest, { params }: {params: Promise<{ id: string }>}) {
+  console.log(req)
   const { id } = await params;
   const authHeader = req.headers.get('authorization')
   const token = authHeader?.split(' ')[1]
