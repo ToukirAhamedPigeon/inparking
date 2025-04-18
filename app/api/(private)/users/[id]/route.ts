@@ -17,10 +17,9 @@ import bcrypt from 'bcryptjs'
 import { deleteImage, uploadAndResizeImage } from '@/lib/imageUploder'
 import { getCreatedAtId } from '@/lib/formatDate'
 import { omitFields } from '@/lib/helpers'
-import { Context } from 'vm'
-export async function GET(req: NextRequest, context: { params: { id: string } }) {
-  const { params } = context
-  const userId = (await params).id
+
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+  const { id } = params;
   const authHeader = req.headers.get('authorization')
   const token = authHeader?.split(' ')[1]
   
@@ -29,12 +28,12 @@ export async function GET(req: NextRequest, context: { params: { id: string } })
         const decoded = jwt.verify(token, process.env.ACCESS_SECRET!)
         await dbConnect()
 
-        if (!Types.ObjectId.isValid(userId)) {
+          if (!Types.ObjectId.isValid(id)) {
           return NextResponse.json({ error: 'Invalid user ID' }, { status: 400 })
         }
 
         try {
-            const user = await User.findById(userId).populate('profilePicture').lean()
+            const user = await User.findById(id).populate('profilePicture').lean()
 
             if (!user) {
               return NextResponse.json({ error: 'User not found' }, { status: 404 })
@@ -55,8 +54,8 @@ export async function GET(req: NextRequest, context: { params: { id: string } })
         }
 }
 
-export async function PUT(req: NextRequest, context: { params: { id: string } }) {
-  const { params } = context
+export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+  const { id } = params;
   const authHeader = req.headers.get('authorization')
   const token = authHeader?.split(' ')[1]
 
@@ -64,7 +63,7 @@ export async function PUT(req: NextRequest, context: { params: { id: string } })
 
   try {
     jwt.verify(token, process.env.ACCESS_SECRET!)
-    const userId = (await params).id
+    const userId = id
     const formData = await req.formData()
 
     const isImageDeleted = formData.get('isImageDeleted') === 'true'
@@ -127,9 +126,9 @@ export async function PUT(req: NextRequest, context: { params: { id: string } })
   }
 }
 
-export async function DELETE(req: NextRequest, context: { params: { id: string } }) { 
-  const { params } = context
-  const userId = (await params).id
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+  const { id } = params;
+  const userId = id
   const authHeader = req.headers.get('authorization')
   const token = authHeader?.split(' ')[1]
 
