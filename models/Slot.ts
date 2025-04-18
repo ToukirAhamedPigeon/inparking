@@ -11,8 +11,9 @@ const slotSchema = new Schema<ISlot>(
     isActive: { type: Boolean, default: true },
     createdBy: { type: Types.ObjectId, ref: 'User', required: true },
     updatedBy: { type: Types.ObjectId, ref: 'User', required: true },
+    createdAtId: { type: Number },
   },
-  { timestamps: true }
+  { timestamps: true, strict: false }
 )
 
 const Slot = models.Slot || model<ISlot>('Slot', slotSchema)

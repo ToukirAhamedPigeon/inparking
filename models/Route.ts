@@ -9,10 +9,11 @@ const routeSchema = new Schema<IRoute>(
     description: { type: String },
     images: [{ type: Types.ObjectId, ref: 'Image' }],
     isActive: { type: Boolean, default: true },
-    createdBy: { type: Types.ObjectId, ref: 'User', required: true },
+    createdBy: { type: Types.ObjectId, ref: 'User', required: true }, 
     updatedBy: { type: Types.ObjectId, ref: 'User', required: true },
+    createdAtId: { type: Number },
   },
-  { timestamps: true }
+  { timestamps: true, strict: false }
 )
 
 const Route = models.Route || model<IRoute>('Route', routeSchema)

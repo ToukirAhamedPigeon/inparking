@@ -29,6 +29,7 @@ export interface IUser {
   profilePicture: IImage;
   role: EUserRole;
   isActive: boolean;
+  createdAtId?: number;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -41,6 +42,7 @@ export interface IImage {
   modelType: string;
   modelId: Types.ObjectId;
   createdBy: IUser;
+  createdAtId?: number;
   createdAt: Date;
 }
 
@@ -54,6 +56,7 @@ export interface IRoute {
   isActive: boolean;
   createdBy: IUser;
   updatedBy: IUser;
+  createdAtId?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -68,6 +71,7 @@ export interface ISlot {
   isActive: boolean;
   createdBy: IUser;
   updatedBy: IUser;
+  createdAtId?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -86,6 +90,7 @@ export interface IZone {
   isActive: boolean;
   createdBy: IUser;
   updatedBy: IUser;
+  createdAtId?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -105,6 +110,7 @@ export interface IAllotment {
   qrString: string;
   createdBy: IUser;
   updatedBy: IUser;
+  dateTimeFormatId?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -117,6 +123,7 @@ export interface ILog {
   collectionName: string;
   objectId?: string;
   createdBy: IUser;
+  createdAtId?: number;
   createdAt: Date;
 }
 

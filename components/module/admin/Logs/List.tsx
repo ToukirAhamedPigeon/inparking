@@ -1,39 +1,32 @@
 'use client'
 import React, { useMemo } from 'react'
 import { flexRender, getCoreRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, ColumnDef, SortingState, OnChangeFn} from '@tanstack/react-table'
-import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { FaSort, FaSortUp, FaSortDown } from 'react-icons/fa'
 import { useAuth } from '@/contexts/AuthContext'
-import { EUserRole, IUser } from '@/types'
+import { EUserRole, EActionType, ILog } from '@/types'
 import { useTable } from '@/hooks/useTable'
 import { useDetailModal } from '@/hooks/useDetailModal'
-import { useEditModal } from '@/hooks/useEditModal'
-import { useDeleteWithConfirm } from '@/hooks/useDeleteWithConfirm'
 import Modal from '@/components/custom/Modal'
-import ConfirmDialog from '@/components/custom/ConfirmDialog'
-import Detail from './Detail'
-import EditUserForm from './Edit'
 import {RowActions,IndexCell,TableHeaderActions,TablePaginationFooter,TableLoader} from '@/components/custom/Table'
 import { formatDateTime } from '@/lib/formatDate'
 import { capitalize, exportExcel } from '@/lib/helpers'
 import Fancybox from '@/components/custom/FancyBox'
 import { Badge } from '@/components/ui/badge'
 import api from '@/lib/axios'
+import Detail from './Detail'
 
-export default function UserListTable() {
-  //Router Hook
-  const router = useRouter()
+export default function LogListTable() {
   //Auth Hook
   const { user } = useAuth()
   const authUser = localStorage.getItem('authUser')
   const token = JSON.parse(authUser || '{}').token
 
   //Table Hook
-  const { data, totalCount, loading, globalFilter, setGlobalFilter, sorting, setSorting, pageIndex, setPageIndex, pageSize, setPageSize, fetchData,} =
-   useTable<IUser>({
+  const { data, totalCount, loading, globalFilter, setGlobalFilter, sorting, setSorting, pageIndex, setPageIndex, pageSize, setPageSize} =
+   useTable<ILog>({
     fetcher: async ({ q, page, limit, sortBy, sortOrder }) => {
-      const res = await api.get('/users', {
+      const res = await api.get('/logs', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -47,26 +40,17 @@ export default function UserListTable() {
       })
   
       return {
-        data: res.data.users as IUser[],
-        total: res.data.total,
+        data: res.data.logs as ILog[],
+        total: res.data.totalCount,
       }
     },
   })
 
   //Detail Modal Hook
-  const {isModalOpen,selectedItem,fetchDetail,closeModal: closeDetailModal} = useDetailModal<IUser>('/users')
-
-  //Edit Modal Hook
-  const {isOpen: isEditModalOpen,itemToEdit: userToEdit,openEdit: handleEditClick,closeEdit: closeEditModal} = useEditModal<IUser>()
-
-  //Delete Modal Hook
-  const {dialogOpen,confirmDelete,cancelDelete,handleDelete} = useDeleteWithConfirm({
-    endpoint: '/users',
-    onSuccess: fetchData,
-  })
+  const {isModalOpen,selectedItem,fetchDetail,closeModal: closeDetailModal} = useDetailModal<ILog>('/logs')
 
   //Columns
-  const columns = useMemo<ColumnDef<IUser>[]>(() => [
+  const columns = useMemo<ColumnDef<ILog>[]>(() => [
     {
       header: 'SL',
       cell: ({ row }) => (
@@ -82,60 +66,45 @@ export default function UserListTable() {
         <RowActions
           row={row.original}
           onDetail={() => fetchDetail(row.original._id.toString())}
-          onEdit={() => handleEditClick(row.original)}
-          onDelete={() => confirmDelete(row.original._id.toString())}
         />
       ),
     },
     {
-      header: 'Name',
-      accessorKey: 'name',
+      header: 'Detail',
+      accessorKey: 'detail',
     },
     {
-      header: 'Email',
-      accessorKey: 'email',
-    },
-    ...(user?.role === EUserRole.DEVELOPER
-      ? [{
-          header: 'Decrypted Password',
-          accessorKey: 'decryptedPassword',
-        }]
-      : []),
-    {
-      header: 'Profile Picture',
-      cell: ({ row }) => (
-        <Fancybox
-          src={row.original.profilePicture?.imageUrl || '/assets/policeman.png'}
-          alt={row.original.name}
-          className="w-14 h-14 rounded-full"
-        />
-      ),
-    },
-    {
-      header: 'Role',
-      accessorKey: 'role',
+      header: 'Action Type',
+      accessorKey: 'actionType',
       cell: ({ getValue }) => capitalize(getValue() as string),
     },
     {
-      header: 'Status',
-      accessorKey: 'isActive',
-      cell: ({ getValue }) => (
-        <Badge variant={getValue() ? 'success' : 'destructive'}>
-          {getValue() ? 'Active' : 'Inactive'}
-        </Badge>
-      ),
+      header: 'Collection Name',
+      accessorKey: 'collectionName',
+      cell: ({ getValue }) => capitalize(getValue() as string),
+    },
+    {
+      header: 'Object ID',
+      accessorKey: 'objectId',
+    },
+    {
+      header: 'Object Name',
+      accessorKey: 'relatedName',
+    },
+    {
+      header: 'Created By',
+      accessorKey: 'createdBy.name',
+      cell: ({ row }) => {
+        const creator = row.original.createdBy;
+        return typeof creator === 'object' ? creator.name : 'Unknown';
+      },
     },
     {
       header: 'Created At',
       accessorKey: 'createdAt',
       cell: ({ getValue }) => formatDateTime(getValue() as string),
-    },
-    {
-      header: 'Updated At',
-      accessorKey: 'updatedAt',
-      cell: ({ getValue }) => formatDateTime(getValue() as string),
-    },
-  ], [pageIndex, user?.role])
+    }
+  ], [pageIndex])
 
   //Table
   const table = useReactTable({
@@ -158,10 +127,8 @@ export default function UserListTable() {
       <TableHeaderActions
         searchValue={globalFilter}
         onSearchChange={setGlobalFilter}
-        onAddNew={() => router.push('/admin/users/register')}
         onPrint={() => window.print()}
-        onExport={() => exportExcel({ data, fileName: 'Users', sheetName: 'Users' })}
-        addButtonLabel="Register New User"
+        onExport={() => exportExcel({ data, fileName: 'Logs', sheetName: 'Logs' })}
       />
 
       {/* Table */}
@@ -222,38 +189,10 @@ export default function UserListTable() {
       />
 
         {/* Detail Modal */}
-      <Modal isOpen={isModalOpen} onClose={closeDetailModal} title="User Details">
-        <Detail user={selectedItem} />
+      <Modal isOpen={isModalOpen} onClose={closeDetailModal} title="Log Details">
+        <Detail log={selectedItem} />
       </Modal>
 
-      {/* Edit Modal */}  
-      <Modal
-        isOpen={isEditModalOpen}
-        onClose={closeEditModal}
-        title="Edit User"
-        titleClassName="text-2xl font-bold text-gray-700 text-center"
-      >
-        {userToEdit && (
-          <EditUserForm
-            user={userToEdit}
-            onClose={closeEditModal}
-            onSuccess={() => {
-              closeEditModal()
-              fetchData()
-            }}
-          />
-        )}
-      </Modal>
-
-      {/* Confirm Dialog */}
-      <ConfirmDialog
-        open={dialogOpen}
-        onCancel={cancelDelete}
-        onConfirm={handleDelete}
-        title="Confirm Deletion"
-        description="Are you sure you want to delete this user?"
-        confirmLabel="Delete"
-      />
     </motion.div>
   )
 }

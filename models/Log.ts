@@ -9,8 +9,9 @@ const logSchema = new Schema<ILog>(
     collectionName: { type: String, required: true },
     objectId: { type: String },
     createdBy: { type: Types.ObjectId, ref: 'User', required: true },
+    createdAtId: { type: Number },
   },
-  { timestamps: { createdAt: true, updatedAt: false } } // Only createdAt is tracked
+  { timestamps: { createdAt: true, updatedAt: false }, strict: false } // Only createdAt is tracked
 )
 
 const Log = models.Log || model<ILog>('Log', logSchema)

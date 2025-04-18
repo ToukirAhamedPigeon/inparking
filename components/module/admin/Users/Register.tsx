@@ -12,8 +12,9 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@
 import Dropzone from 'react-dropzone'
 import Image from 'next/image'
 import { toast } from 'sonner'
-import Cookies from 'js-cookie'
 import api from '@/lib/axios'
+import { checkEmailExists } from '@/lib/helpers'
+import { useProfilePicture } from '@/hooks/useProfilePicture'
 
 const schema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -27,17 +28,15 @@ const schema = z.object({
   message: "Passwords don't match",
 })
 
+type FormData = z.infer<typeof schema>
+
 const authUser = localStorage.getItem('authUser')
 const token = JSON.parse(authUser || '{}').token
 
-type FormData = z.infer<typeof schema>
-
 export default function Register() {
-  const [preview, setPreview] = useState<string | null>(null)
   const [emailChecking, setEmailChecking] = useState(false)
   const [emailTaken, setEmailTaken] = useState(false)
   const [submitLoading, setSubmitLoading] = useState(false)
-
 
   const {
     register,
@@ -59,65 +58,15 @@ export default function Register() {
     }
   })
 
+  const {
+    preview,
+    clearImage,
+    onDrop,
+    setPreview
+  } = useProfilePicture(setValue, setError, 'profilePicture')
+
   const profilePic = watch('profilePicture')
   const email = watch('email')
-
-  const clearImage = () => {
-    setValue('profilePicture', undefined)
-    setPreview(null)
-    setError('profilePicture', { message: '' })
-  }
-  
-
-  // Dropzone Handler
-
-  const onDrop = (acceptedFiles: File[], fileRejections: any[]) => {
-    // Clear previous
-    setValue('profilePicture', undefined)
-    setPreview(null)
-    setError('profilePicture', { message: '' })
-
-    const file = acceptedFiles[0]
-
-    if (fileRejections.length > 0 || !file) {
-      setError('profilePicture', {
-        type: 'manual',
-        message: 'Invalid file type. Only jpg, jpeg, png, gif, webp, svg are allowed.'
-      })
-      return
-    }
-
-    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml']
-    const maxSize = 5 * 1024 * 1024 // 5MB
-
-    if (!validTypes.includes(file.type) || file.size > maxSize) {
-      setError('profilePicture', {
-        type: 'manual',
-        message: 'File must be an image and less than 5MB.'
-      })
-      return
-    }
-
-    // Valid file
-    setValue('profilePicture', file)
-    setPreview(URL.createObjectURL(file))
-  }
-
-  // Email uniqueness check
-  const checkEmailExists = async (email: string): Promise<boolean> => {
-    try {
-      const res = await api.get(`/auth/check-email?email=${email}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-      })
-      const data = res.data
-      return data.exists
-    } catch (error) {
-      console.error('Error checking email:', error)
-      return false
-    }
-  }
 
   // Debounced email validation
   useEffect(() => {
@@ -128,7 +77,7 @@ export default function Register() {
 
     const debounceTimer = setTimeout(async () => {
       setEmailChecking(true)
-      const exists = await checkEmailExists(email)
+      const exists = await checkEmailExists(email, token)
       setEmailTaken(exists)
       setEmailChecking(false)
     }, 500)
@@ -140,7 +89,7 @@ export default function Register() {
   const onSubmit = async (data: FormData) => {
     // Check if email already exists
     setSubmitLoading(true)
-    const emailTaken = await checkEmailExists(data.email)
+    const emailTaken = await checkEmailExists(data.email, token)
     if (emailTaken) {
       setError('email', { type: 'manual', message: 'Email already exists' })
       setSubmitLoading(false)

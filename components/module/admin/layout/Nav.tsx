@@ -17,7 +17,7 @@ const menuItems = [
     ], role: [EUserRole.ADMIN, EUserRole.DEVELOPER]
   },
   {
-    label: 'Routes', icon: '🚗', basePath: '/admin/routes', children: [
+    label: 'Routes', icon: '🛣️', basePath: '/admin/routes', children: [
       { label: 'List', basePath: '/admin/routes/list' },
       { label: 'Add', basePath: '/admin/routes/add' },
     ], role: [EUserRole.ADMIN, EUserRole.DEVELOPER]

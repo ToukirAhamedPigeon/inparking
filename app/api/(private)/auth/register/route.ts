@@ -6,6 +6,7 @@ import { logAction } from '@/lib/logger'
 import { uploadAndResizeImage } from '@/lib/imageUploder'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import { getCreatedAtId } from '@/lib/formatDate'
 
 
 export async function POST(req: Request) {
@@ -44,6 +45,7 @@ export async function POST(req: Request) {
             decryptedPassword: password,
             role
           })
+          await User.findByIdAndUpdate(newUser._id, { dateTimeFormatId: getCreatedAtId(newUser.createdAt) }, { new: true, strict: false })
           if (file && file.size > 0 && file.type.startsWith('image/')) {
               const { imageDoc }: { imageDoc: typeof Image.prototype } = await uploadAndResizeImage({
                   file,

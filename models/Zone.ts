@@ -15,8 +15,9 @@ const zoneSchema = new Schema<IZone>(
     isActive: { type: Boolean, default: true },
     createdBy: { type: Types.ObjectId, ref: 'User', required: true },
     updatedBy: { type: Types.ObjectId, ref: 'User', required: true },
+    createdAtId: { type: Number },
   },
-  { timestamps: true }
+  { timestamps: true, strict: false }
 )
 
 const Zone = models.Zone || model<IZone>('Zone', zoneSchema)

@@ -41,7 +41,8 @@ async function migrate() {
         password: hashedPassword,
         decryptedPassword: password,
         role: EUserRole.ADMIN,
-        isActive: true
+        isActive: true,
+        createdAtId: getCreatedAtId(new Date())
       })
 
       console.log('✅ Admin user created successfully')
@@ -49,7 +50,18 @@ async function migrate() {
       // Step 2: Create default image for the user profile picture
       const defaultImagePath = '/uploads/images/users/policeman.png'
       const existingImage = await Image.findOne({ imageUrl: defaultImagePath })
-
+      function getCreatedAtId(createdAt: Date): number {
+        const pad = (n: number) => String(n).padStart(2, '0')
+    
+        const createdAtId = 
+          createdAt.getFullYear().toString() +
+          pad(createdAt.getMonth() + 1) +
+          pad(createdAt.getDate()) +
+          pad(createdAt.getHours()) +
+          pad(createdAt.getMinutes()) +
+          pad(createdAt.getSeconds())
+        return parseInt(createdAtId)
+      }
       let imageObjectId: mongoose.Types.ObjectId | null = null
       if (!existingImage) {
         const image = await Image.create({
@@ -57,7 +69,8 @@ async function migrate() {
           modelType: EModelType.User,  // For user profile picture
           modelId: adminUser._id, // Assign the created admin user objectId
           createdBy: adminUser._id,  // Optional - can be set to null if no admin created at this point
-          createdAt: new Date()
+          createdAt: new Date(),
+          createdAtId: getCreatedAtId(new Date())
         })
         imageObjectId = image._id
         console.log('✅ Default profile image created')

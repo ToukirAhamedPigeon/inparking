@@ -14,10 +14,11 @@ const allotmentSchema = new Schema<IAllotment>(
     allotmentFrom: { type: Date, required: true },
     allotmentTo: { type: Date, required: true },
     qrString: { type: String, required: true, unique: true },
+    dateTimeFormatId: { type: Number },
     createdBy: { type: Types.ObjectId, ref: 'User', required: true },
     updatedBy: { type: Types.ObjectId, ref: 'User', required: true },
   },
-  { timestamps: true }
+  { timestamps: true, strict: false }
 )
 
 const Allotment = models.Allotment || model<IAllotment>('Allotment', allotmentSchema)

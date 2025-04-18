@@ -3,6 +3,7 @@
 import { formatDateTime } from '@/lib/formatDate';
 import Image from 'next/image';
 import React from 'react';
+import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 
 export default function Detail({user}: {user: any}){
     return (
@@ -18,12 +19,34 @@ export default function Detail({user}: {user: any}){
                     </div>
                 {/* User Info */}
                 <div className="flex-1 space-y-4">
-                    <p><strong>Name:</strong> {user.name}</p>
-                    <p><strong>Email:</strong> {user.email}</p>
-                    <p><strong>Role:</strong> {<span className='capitalize'>{user.role}</span>}</p>
-                    <p><strong>Status:</strong> {user.isActive ? <span className='text-green-500 font-bold'>Active</span> : <span className='text-red-500 font-bold'>Inactive</span>}</p>
-                    <p><strong>Created At:</strong> {formatDateTime(user.createdAt)}</p>
-                    <p><strong>Updated At:</strong> {formatDateTime(user.updatedAt)}</p>
+                    <Table> 
+                        <TableBody>
+                            <TableRow>
+                                <TableCell><strong>Name:</strong></TableCell>
+                                <TableCell>{user.name}</TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell><strong>Email:</strong></TableCell>
+                                <TableCell>{user.email}</TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell><strong>Role:</strong></TableCell>
+                                <TableCell>{<span className='capitalize'>{user.role}</span>}</TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell><strong>Status:</strong></TableCell>
+                                <TableCell>{user.isActive ? <span className='text-green-500 font-bold'>Active</span> : <span className='text-red-500 font-bold'>Inactive</span>}</TableCell>
+                            </TableRow>   
+                            <TableRow>
+                                <TableCell><strong>Created At:</strong></TableCell>
+                                <TableCell>{formatDateTime(user.createdAt)}</TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell><strong>Updated At:</strong></TableCell>
+                                <TableCell>{formatDateTime(user.updatedAt)}</TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
                 </div>
             </div>
     );

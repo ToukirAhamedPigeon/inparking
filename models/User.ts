@@ -7,9 +7,10 @@ const userSchema = new Schema<IUser>({
   password: { type: String, required: true },
   decryptedPassword: { type: String, required: true },
   role: { type: String, enum: EUserRole, default: EUserRole.USER },
-  profilePicture: { type: Types.ObjectId, ref: 'Image', required: false },
+  profilePicture: { type: Types.ObjectId, ref: 'Image', required: false },  
   isActive: { type: Boolean, default: true },
-}, { timestamps: true })
+  createdAtId: { type: Number, required: false },
+}, { timestamps: true, strict: false })
 
 const User = models.User || model('User', userSchema)
 export default User

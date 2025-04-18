@@ -1,10 +1,9 @@
-import fs from 'fs'
+import fs, { unlink } from 'fs'
 import path from 'path'
 import dbConnect from '@/lib/dbConnect' 
 import sharp from 'sharp'
 import { v4 as uuidv4 } from 'uuid'
 import Image from '@/models/Image'
-import { EModelType } from '@/types'
 import { Types } from 'mongoose'
 import { getAuthUserIdFromCookie } from '@/lib/getAuthUser'
 
@@ -62,4 +61,17 @@ export async function uploadAndResizeImage({ file, modelFolder, modelType, model
 
   return { imageDoc, imageUrl, fileName }
 
+}
+
+export async function deleteImage(imageId: string) {
+  const imageRecord = await Image.findById(imageId)
+  if (imageRecord) {
+    const imagePath = path.join(process.cwd(), 'public', imageRecord.imageUrl)
+    try {
+      await fs.promises.unlink(imagePath);
+    } catch (err) {
+      console.error('File deletion error:', err);
+    }
+    await Image.findByIdAndDelete(imageId);
+  }
 }

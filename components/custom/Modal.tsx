@@ -1,47 +1,51 @@
 import React from 'react'
 import { motion } from 'framer-motion'
+import { X } from 'lucide-react'
+import { cn } from '@/lib/utils'
+
 type ModalProps = {
   isOpen: boolean
   onClose: () => void
   title: string
   children: React.ReactNode
+  titleClassName?: string
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, titleClassName }) => {
   if (!isOpen) return null
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
-      onClick={onClose} // Close on clicking outside
+      className="fixed inset-0 pt-[50px] flex items-start justify-center bg-black bg-opacity-50 z-50"
+      onClick={onClose}
     >
       <motion.div
         initial={{ scale: 0.9 }}
         animate={{ scale: 1 }}
         exit={{ scale: 0.9 }}
         transition={{ duration: 0.3 }}
-        className="bg-gradient-to-t from-[#fdfbfb] via-white to-[#ebedee] p-8 rounded-lg w-full max-w-4xl flex flex-col"
-        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
+        className="relative bg-gradient-to-t from-[#fdfbfb] via-white to-[#ebedee] p-8 rounded-lg w-full max-w-3xl max-h-[calc(100vh-100px)] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
       >
+        {/* Close icon (top right) */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition"
+          aria-label="Close modal"
+        >
+          <X size={24} />
+        </button>
+
         {/* Title */}
-        <div className="text-2xl font-semibold text-gray-800 mb-6">
+        <div className={cn("text-2xl font-semibold text-gray-800 mb-6", titleClassName)}>
           {title}
         </div>
 
-       {children}
-
-        {/* Footer with Close Button */}
-        <div className="flex justify-end mt-6">
-          <button
-            onClick={onClose}
-            className="bg-gray-800 text-white px-6 py-2 rounded-lg shadow-md hover:bg-gray-700 transition"
-          >
-            Close
-          </button>
-        </div>
+        {children}
       </motion.div>
     </motion.div>
   )

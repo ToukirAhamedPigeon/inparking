@@ -9,8 +9,9 @@ const imageSchema = new Schema<IImage>(
     modelType: { type: String, enum: EModelType, required: true },
     modelId: { type: Schema.Types.ObjectId, required: true },
     createdBy: { type: Types.ObjectId, ref: 'User', required: true },
+    createdAtId: { type: Number },
   },
-  { timestamps: { createdAt: true, updatedAt: false } } // Only createdAt is tracked
+  { timestamps: { createdAt: true, updatedAt: false }, strict: false } // Only createdAt is tracked
 )
 
 const Image = models.Image || model<IImage>('Image', imageSchema)

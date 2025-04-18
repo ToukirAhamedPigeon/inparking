@@ -55,7 +55,7 @@ api.interceptors.response.use(
       isRefreshing = true
 
       try {
-        const response = await axios.post('/api/auth/refresh', {}, { withCredentials: true })
+        const response = await axios.post('/api/refresh', {}, { withCredentials: true })
 
         const newToken = response.data.token
         Cookies.set('inparking_access_token', newToken)
