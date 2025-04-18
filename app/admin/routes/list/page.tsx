@@ -4,6 +4,7 @@ import Breadcrumb from '@/components/module/admin/layout/Breadcrumb';
 import React from 'react';
 import Protected from '@/components/custom/Protected';
 import { EUserRole } from '@/types';
+import RouteListTable from '@/components/module/admin/routes/List';
 
 
 export default function List(){
@@ -19,6 +20,7 @@ export default function List(){
         ]}
       />
       </div>
+      <RouteListTable />
       </>
     );
 };

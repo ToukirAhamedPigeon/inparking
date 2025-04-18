@@ -95,10 +95,25 @@ export interface IZone {
   updatedAt: Date;
 }
 
-export interface ZoneWithImages extends IZone {
-  images: IImage[];
-}
+  export interface ZoneWithImages extends IZone {
+    images: IImage[];
+  }
 
+  export interface RouteWithImages extends IRoute {
+    images: IImage[];
+  }
+
+  export interface SlotWithImages extends ISlot {
+    images: IImage[];
+  }
+
+  export interface ZoneWithRoutes extends IZone {
+    routes: IRoute[];
+  }
+
+  export interface ZoneWithSlots extends IZone {
+    slots: ISlot[];
+  }
 export interface IAllotment {
   _id: Types.ObjectId;
   slotId: ISlot;

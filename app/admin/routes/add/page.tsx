@@ -4,6 +4,7 @@ import Breadcrumb from '@/components/module/admin/layout/Breadcrumb';
 import React from 'react';
 import Protected from '@/components/custom/Protected';
 import { EUserRole } from '@/types';
+import AddRoute from '@/components/module/admin/routes/AddRoute';
 
 export default function Add(){
     return (
@@ -18,6 +19,7 @@ export default function Add(){
           { label: 'Add Route' },
         ]}
       />
+      <AddRoute />
       </div>
       </>
     );
