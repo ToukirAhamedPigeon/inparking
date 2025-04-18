@@ -17,25 +17,24 @@ import bcrypt from 'bcryptjs'
 import { deleteImage, uploadAndResizeImage } from '@/lib/imageUploder'
 import { getCreatedAtId } from '@/lib/formatDate'
 import { omitFields } from '@/lib/helpers'
-export async function GET(
-    request: Request,
-    { params }: { params: Promise<{ id: string }> }
-  ) {
-    const authHeader = request.headers.get('authorization')
-    const token = authHeader?.split(' ')[1]
+import { Context } from 'vm'
+export async function GET(req: NextRequest, context: { params: { id: string } }) {
+  const { params } = context
+  const userId = (await params).id
+  const authHeader = req.headers.get('authorization')
+  const token = authHeader?.split(' ')[1]
   
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
       try {
         const decoded = jwt.verify(token, process.env.ACCESS_SECRET!)
-        const id = (await params).id
         await dbConnect()
 
-        if (!Types.ObjectId.isValid(id)) {
+        if (!Types.ObjectId.isValid(userId)) {
           return NextResponse.json({ error: 'Invalid user ID' }, { status: 400 })
         }
 
         try {
-            const user = await User.findById(id).populate('profilePicture').lean()
+            const user = await User.findById(userId).populate('profilePicture').lean()
 
             if (!user) {
               return NextResponse.json({ error: 'User not found' }, { status: 404 })
@@ -56,7 +55,79 @@ export async function GET(
         }
 }
 
-export async function DELETE(req: NextRequest, context: { params: { id: string } }) {
+export async function PUT(req: NextRequest, context: { params: { id: string } }) {
+  const { params } = context
+  const authHeader = req.headers.get('authorization')
+  const token = authHeader?.split(' ')[1]
+
+  if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  try {
+    jwt.verify(token, process.env.ACCESS_SECRET!)
+    const userId = (await params).id
+    const formData = await req.formData()
+
+    const isImageDeleted = formData.get('isImageDeleted') === 'true'
+    const file = formData.get('profilePicture') as File | null
+    const password = formData.get('password') as string
+    const hashedPassword = await bcrypt.hash(password, 10)
+
+
+    await dbConnect()
+
+    const user = await User.findById(userId)
+
+    const updates: any = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      password: hashedPassword,
+      decryptedPassword: password,
+      role: formData.get('role'),
+      createdAtId: getCreatedAtId(user.createdAt),
+      isActive: formData.get('isActive') === 'true'
+      
+    }
+
+    if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 })
+
+    // Handle image deletion
+    if (isImageDeleted && user.profilePicture) {
+      await deleteImage(user.profilePicture._id)
+      updates.profilePicture = null
+    }
+
+    // Handle new image upload
+    if (file && file.size > 0 && file.type.startsWith('image/')) {
+      const { imageDoc }: { imageDoc: typeof Image.prototype } = await uploadAndResizeImage(
+        {
+          file,
+          modelFolder: 'users', 
+          modelType: EModelType.User, 
+          modelId: user._id
+        }
+      )
+      updates.profilePicture = imageDoc._id
+    }
+
+    
+    const updatedUser = await User.findByIdAndUpdate(userId, updates, { new: true, strict: false })
+    await logAction({
+      detail: `User updated: ${updatedUser.name}`,
+      changes: JSON.stringify({ before: omitFields(user.toObject?.() || user, ['password', 'decryptedPassword','createdAtId','__v']), after: omitFields(updatedUser.toObject?.() || updatedUser, ['password', 'decryptedPassword','createdAtId','__v']) }),
+      actionType: EActionType.UPDATE,
+      collectionName: 'User',
+      objectId: userId,
+    })
+
+    return NextResponse.json({ user: updatedUser })
+  } catch (err) {
+    console.error('Update error:', err)
+    const status = err instanceof Error && err.name === 'JsonWebTokenError' ? 403 : 500
+    return NextResponse.json({ error: 'Invalid or expired token' }, { status })
+  }
+}
+
+export async function DELETE(req: NextRequest, context: { params: { id: string } }) { 
   const { params } = context
   const userId = (await params).id
   const authHeader = req.headers.get('authorization')
@@ -130,77 +201,5 @@ export async function DELETE(req: NextRequest, context: { params: { id: string }
   } catch (err) {
     console.error('Error:', err)
     return NextResponse.json({ error: 'Server Error' }, { status: 500 })
-  }
-}
-
-export async function PUT(req: NextRequest, context: { params: { id: string } }) {
-  const { params } = context
-  const authHeader = req.headers.get('authorization')
-  const token = authHeader?.split(' ')[1]
-
-  if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  try {
-    jwt.verify(token, process.env.ACCESS_SECRET!)
-    const userId = (await params).id
-    const formData = await req.formData()
-
-    const isImageDeleted = formData.get('isImageDeleted') === 'true'
-    const file = formData.get('profilePicture') as File | null
-    const password = formData.get('password') as string
-    const hashedPassword = await bcrypt.hash(password, 10)
-
-
-    await dbConnect()
-
-    const user = await User.findById(userId)
-
-    const updates: any = {
-      name: formData.get('name'),
-      email: formData.get('email'),
-      password: hashedPassword,
-      decryptedPassword: password,
-      role: formData.get('role'),
-      createdAtId: getCreatedAtId(user.createdAt),
-      isActive: formData.get('isActive') === 'true'
-      
-    }
-
-    if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 })
-
-    // Handle image deletion
-    if (isImageDeleted && user.profilePicture) {
-      await deleteImage(user.profilePicture._id)
-      updates.profilePicture = null
-    }
-
-    // Handle new image upload
-    if (file && file.size > 0 && file.type.startsWith('image/')) {
-      const { imageDoc }: { imageDoc: typeof Image.prototype } = await uploadAndResizeImage(
-        {
-          file,
-          modelFolder: 'users', 
-          modelType: EModelType.User, 
-          modelId: user._id
-        }
-      )
-      updates.profilePicture = imageDoc._id
-    }
-
-    
-    const updatedUser = await User.findByIdAndUpdate(userId, updates, { new: true, strict: false })
-    await logAction({
-      detail: `User updated: ${updatedUser.name}`,
-      changes: JSON.stringify({ before: omitFields(user.toObject?.() || user, ['password', 'decryptedPassword','createdAtId','__v']), after: omitFields(updatedUser.toObject?.() || updatedUser, ['password', 'decryptedPassword','createdAtId','__v']) }),
-      actionType: EActionType.UPDATE,
-      collectionName: 'User',
-      objectId: userId,
-    })
-
-    return NextResponse.json({ user: updatedUser })
-  } catch (err) {
-    console.error('Update error:', err)
-    const status = err instanceof Error && err.name === 'JsonWebTokenError' ? 403 : 500
-    return NextResponse.json({ error: 'Invalid or expired token' }, { status })
   }
 }
