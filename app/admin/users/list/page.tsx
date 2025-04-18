@@ -9,7 +9,7 @@ import Protected from '@/components/custom/Protected';
 export default function List(){
     return (
         <>
-        <Protected roles={[EUserRole.ADMIN, EUserRole.DEVELOPER]} />
+        <Protected roles={[EUserRole.DEVELOPER]} />
         <div className='flex flex-col gap-4'>
           <Breadcrumb
           title="Users"

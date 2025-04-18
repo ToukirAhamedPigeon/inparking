@@ -1,30 +1,38 @@
 'use client'
 import React, { useMemo } from 'react'
 import { flexRender, getCoreRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, ColumnDef, SortingState, OnChangeFn} from '@tanstack/react-table'
+import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { FaSort, FaSortUp, FaSortDown } from 'react-icons/fa'
 import { useAuth } from '@/contexts/AuthContext'
-import { ILog, EActionType } from '@/types'
+import { IZone } from '@/types'
 import { useTable } from '@/hooks/useTable'
 import { useDetailModal } from '@/hooks/useDetailModal'
+import { useEditModal } from '@/hooks/useEditModal'
+import { useDeleteWithConfirm } from '@/hooks/useDeleteWithConfirm'
 import Modal from '@/components/custom/Modal'
+import ConfirmDialog from '@/components/custom/ConfirmDialog'
+import Detail from './Detail'
 import {RowActions,IndexCell,TableHeaderActions,TablePaginationFooter,TableLoader} from '@/components/custom/Table'
 import { formatDateTime } from '@/lib/formatDate'
-import { capitalize, exportExcel } from '@/lib/helpers'
+import { exportExcel } from '@/lib/helpers'
 import { Badge } from '@/components/ui/badge'
 import api from '@/lib/axios'
-import Detail from './Detail'
+import EditZoneForm from './Edit'
 
-export default function LogListTable() {
+export default function ZoneListTable() {
+  //Router Hook
+  const router = useRouter()
   //Auth Hook
+  const { user } = useAuth()
   const authUser = localStorage.getItem('authUser')
   const token = JSON.parse(authUser || '{}').token
 
   //Table Hook
-  const { data, totalCount, loading, globalFilter, setGlobalFilter, sorting, setSorting, pageIndex, setPageIndex, pageSize, setPageSize} =
-   useTable<ILog>({
+  const { data, totalCount, loading, globalFilter, setGlobalFilter, sorting, setSorting, pageIndex, setPageIndex, pageSize, setPageSize, fetchData,} =
+   useTable<IZone>({
     fetcher: async ({ q, page, limit, sortBy, sortOrder }) => {
-      const res = await api.get('/logs', {
+      const res = await api.get('/zones', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -38,17 +46,26 @@ export default function LogListTable() {
       })
   
       return {
-        data: res.data.logs as ILog[],
+        data: res.data.zones as IZone[],
         total: res.data.totalCount,
       }
     },
   })
 
   //Detail Modal Hook
-  const {isModalOpen,selectedItem,fetchDetail,closeModal: closeDetailModal} = useDetailModal<ILog>('/logs')
+  const {isModalOpen,selectedItem,fetchDetail,closeModal: closeDetailModal} = useDetailModal<IZone>('/zones')
+
+  //Edit Modal Hook
+  const {isOpen: isEditModalOpen,itemToEdit: zoneToEdit,openEdit: handleEditClick,closeEdit: closeEditModal} = useEditModal<IZone>()
+
+  //Delete Modal Hook
+  const {dialogOpen,confirmDelete,cancelDelete,handleDelete} = useDeleteWithConfirm({
+    endpoint: '/zones',
+    onSuccess: fetchData,
+  })
 
   //Columns
-  const columns = useMemo<ColumnDef<ILog>[]>(() => [
+  const columns = useMemo<ColumnDef<IZone>[]>(() => [
     {
       header: 'SL',
       cell: ({ row }) => (
@@ -64,68 +81,43 @@ export default function LogListTable() {
         <RowActions
           row={row.original}
           onDetail={() => fetchDetail(row.original._id.toString())}
+          onEdit={() => handleEditClick(row.original)}
+          onDelete={() => confirmDelete(row.original._id.toString())}
         />
       ),
     },
     {
-      header: 'Detail',
-      accessorKey: 'detail',
+      header: 'Name',
+      accessorKey: 'name',
     },
     {
-      header: 'Action Type',
-      accessorKey: 'actionType',
-      cell: ({ getValue }) => capitalize(getValue() as string),
+      header: 'Address',
+      accessorKey: 'address',
     },
     {
-      header: 'Collection Name',
-      accessorKey: 'collectionName',
-      cell: ({ getValue }) => capitalize(getValue() as string),
+      header: 'Contact Name',
+      accessorKey: 'contactName',
     },
     {
-      header: 'Object ID',
-      accessorKey: 'objectId',
+      header: 'Contact No',
+      accessorKey: 'contactNo',
     },
     {
-      header: 'Object Name',
-      accessorKey: 'changes',
-      cell: ({ row }) => {
-        const changes = JSON.parse(row.original.changes as string)
-        if (row.original.actionType === EActionType.CREATE || row.original.actionType === EActionType.UPDATE) {
-          if (row.original.collectionName === 'Allotment') {
-            return changes.after.guestName
-          }
-          else if (row.original.collectionName === 'Image') {
-            return changes.after.imageTitle
-          }
-          else if (row.original.collectionName === 'Route') {
-            return changes.after.fromAddress+' to '+changes.after.toAddress
-          }
-          else if (row.original.collectionName === 'Slot') {
-            return changes.after.slotNumber
-          }
-          else {
-            return changes.after.name
-          }
-        }
-        else if (row.original.actionType === EActionType.DELETE) {
-          if (row.original.collectionName === 'Allotment') {
-            return changes.before.guestName
-          }
-          else if (row.original.collectionName === 'Image') {
-            return changes.before.imageTitle
-          }
-          else if (row.original.collectionName === 'Route') {
-            return changes.before.fromAddress+' to '+changes.before.toAddress
-          }
-          else if (row.original.collectionName === 'Slot') {
-            return changes.before.slotNumber
-          }
-          else {
-            return changes.before.name
-          }
-        }
-        return 'N/A'
-      },
+      header: 'Latitude',
+      accessorKey: 'latitude',
+    },
+    {
+      header: 'Longitude',
+      accessorKey: 'longitude',
+    },
+    {
+      header: 'Status',
+      accessorKey: 'isActive',
+      cell: ({ getValue }) => (
+        <Badge variant={getValue() ? 'success' : 'destructive'}>
+          {getValue() ? 'Active' : 'Inactive'}
+        </Badge>
+      ),
     },
     {
       header: 'Created By',
@@ -139,8 +131,21 @@ export default function LogListTable() {
       header: 'Created At',
       accessorKey: 'createdAt',
       cell: ({ getValue }) => formatDateTime(getValue() as string),
-    }
-  ], [pageIndex])
+    },
+    {
+      header: 'Updated By',
+      accessorKey: 'updatedBy.name',
+      cell: ({ row }) => {
+        const updater = row.original.updatedBy;
+        return typeof updater === 'object' ? updater.name : 'Unknown';
+      },
+    },
+    {
+      header: 'Updated At',
+      accessorKey: 'updatedAt',
+      cell: ({ getValue }) => formatDateTime(getValue() as string),
+    },
+  ], [pageIndex, user?.role])
 
   //Table
   const table = useReactTable({
@@ -163,8 +168,10 @@ export default function LogListTable() {
       <TableHeaderActions
         searchValue={globalFilter}
         onSearchChange={setGlobalFilter}
+        onAddNew={() => router.push('/admin/zones/add')}
         onPrint={() => window.print()}
-        onExport={() => exportExcel({ data, fileName: 'Logs', sheetName: 'Logs' })}
+        onExport={() => exportExcel({ data, fileName: 'Zones', sheetName: 'Zones' })}
+        addButtonLabel="Add New Zone"
       />
 
       {/* Table */}
@@ -225,10 +232,40 @@ export default function LogListTable() {
       />
 
         {/* Detail Modal */}
-      <Modal isOpen={isModalOpen} onClose={closeDetailModal} title="Log Details">
-        <Detail log={selectedItem} />
+      <Modal isOpen={isModalOpen} onClose={closeDetailModal} title="Zone Details">
+        {selectedItem && (
+          <Detail zone={selectedItem} />
+        )}
       </Modal>
 
+      {/* Edit Modal */}  
+      <Modal
+        isOpen={isEditModalOpen}
+        onClose={closeEditModal}
+        title="Edit Zone"
+        titleClassName="text-2xl font-bold text-gray-700 text-center"
+      >
+        {zoneToEdit && (
+          <EditZoneForm
+            zoneData={zoneToEdit}
+            onClose={closeEditModal}
+            onSuccess={() => {
+              closeEditModal()
+              fetchData()
+            }}
+          />
+        )}
+      </Modal>
+
+      {/* Confirm Dialog */}
+      <ConfirmDialog
+        open={dialogOpen}
+        onCancel={cancelDelete}
+        onConfirm={handleDelete}
+        title="Confirm Deletion"
+        description="Are you sure you want to delete this zone?"
+        confirmLabel="Delete"
+      />
     </motion.div>
   )
 }

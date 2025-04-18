@@ -4,6 +4,7 @@ import Breadcrumb from '@/components/module/admin/layout/Breadcrumb';
 import React from 'react';
 import Protected from '@/components/custom/Protected';
 import { EUserRole } from '@/types';
+import AddZone from '@/components/module/admin/zones/AddZone';
 
 export default function Add(){
     return (
@@ -18,6 +19,9 @@ export default function Add(){
           { label: 'Add Zone' },
         ]}
       />
+      <div className='flex flex-col gap-4'>
+          <AddZone />
+        </div>
       </div>
       </>
     );

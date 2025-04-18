@@ -7,7 +7,6 @@ import ChangeSnapshot from './ChangeSnapShot';
 import ChangeDiffTable from './ChangeSnapShot';
 
 export default function Detail({log}: {log: any}){
-    console.log(log)
     return (
             <div className="flex flex-col lg:flex-row gap-6">
                 {/* Log Info */}

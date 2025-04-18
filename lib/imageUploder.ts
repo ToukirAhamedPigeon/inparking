@@ -1,4 +1,4 @@
-import fs, { unlink } from 'fs'
+import fs from 'fs'
 import path from 'path'
 import dbConnect from '@/lib/dbConnect' 
 import sharp from 'sharp'
@@ -15,11 +15,13 @@ interface UploadParams {
     modelFolder: string
     modelType: string
     modelId: Types.ObjectId
-    width?: number
     isResize?: boolean
+    width?: number
+    imageTitle?: string
+    imageDetail?: string
   }
 
-export async function uploadAndResizeImage({ file, modelFolder, modelType, modelId, width, isResize }: UploadParams): Promise<{
+export async function uploadAndResizeImage({ file, modelFolder, modelType, modelId, isResize=false, width=1000, imageTitle, imageDetail }: UploadParams): Promise<{
   fileName: string;
   imageUrl: string;
   imageDoc: typeof Image.prototype;
@@ -53,7 +55,8 @@ export async function uploadAndResizeImage({ file, modelFolder, modelType, model
 
    const imageDoc: typeof Image.prototype = await Image.create({
       imageUrl,
-      imageTitle: fileName,
+      imageTitle: imageTitle || fileName,
+      imageDetail: imageDetail || '',
       modelType: modelType,
       modelId: modelId,
       createdBy: authUserId,

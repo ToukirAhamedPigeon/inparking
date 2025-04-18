@@ -151,14 +151,14 @@ export default function Register() {
 
         {/* Name Field */}
         <div className="space-y-1">
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name <span className="text-red-500">*</span></label>
           <Input id="name" placeholder="Name" {...register('name')} />
           {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
         </div>
 
         {/* Email Field */}
         <div className="space-y-1">
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email <span className="text-red-500">*</span></label>
           <div className="relative">
             <Input
               id="email"
@@ -179,21 +179,21 @@ export default function Register() {
 
         {/* Password */}
         <div className="space-y-1">
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password <span className="text-red-500">*</span></label>
           <Input type="password" id="password" placeholder="Password" {...register('password')} />
           {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
         </div>
 
         {/* Confirm Password */}
         <div className="space-y-1">
-          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">Confirm Password</label>
+          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">Confirm Password <span className="text-red-500">*</span></label>
           <Input type="password" id="confirmPassword" placeholder="Confirm Password" {...register('confirmPassword')} />
           {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>}
         </div>
 
         {/* Role */}
         <div className="space-y-1">
-          <label htmlFor="role" className="block text-sm font-medium text-gray-700">Role</label>
+          <label htmlFor="role" className="block text-sm font-medium text-gray-700">Role <span className="text-red-500">*</span></label>
           <Select defaultValue={EUserRole.ADMIN} onValueChange={(val) => setValue('role', val as EUserRole)}>
             <SelectTrigger id="role">
               <SelectValue placeholder="Select Role" />

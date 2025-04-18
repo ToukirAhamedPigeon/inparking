@@ -62,7 +62,6 @@ export const exportExcel = ({data, fileName, sheetName}: {data: any, fileName: s
     if (value === undefined || value === null) return "—"
     if ((key === 'createdAt' || key === 'updatedAt') && (typeof value === 'string' || value instanceof Date)) {
         const dateStr = value instanceof Date ? value.toISOString() : String(value)
-        console.log(dateStr)
         return formatDateTime(dateStr)
     }
     if (typeof value === 'object') return JSON.stringify(value)

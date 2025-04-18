@@ -56,7 +56,6 @@ export async function GET(req:NextRequest, { params }: {params: Promise<{ id: st
 }
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  console.log(req)
   const { id } = await params;
   const authHeader = req.headers.get('authorization')
   const token = authHeader?.split(' ')[1]
@@ -154,10 +153,10 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
 
     // Check for references in other collections
     const referenced = await Promise.any([
-      Zone.exists({ $or: [{ created_by: userId }, { updated_by: userId }] }),
-      Route.exists({ $or: [{ created_by: userId }, { updated_by: userId }] }),
-      Slot.exists({ $or: [{ created_by: userId }, { updated_by: userId }] }),
-      Allotment.exists({ $or: [{ created_by: userId }, { updated_by: userId }] }),
+      Zone.exists({ $or: [{ createdBy: userId }, { updatedBy: userId }] }),
+      Route.exists({ $or: [{ createdBy: userId }, { updatedBy: userId }] }),
+      Slot.exists({ $or: [{ createdBy: userId }, { updatedBy: userId }] }),
+      Allotment.exists({ $or: [{ createdBy: userId }, { updatedBy: userId }] }),
       Log.exists({ createdBy: userId }),
       Image.exists({ createdBy: userId }),
     ])

@@ -38,7 +38,7 @@ const menuItems = [
     label: 'Users', icon: '👥', basePath: '/admin/users', children: [
       { label: 'List', basePath: '/admin/users/list' },
       { label: 'Register', basePath: '/admin/users/register' },
-    ], role: [EUserRole.ADMIN, EUserRole.DEVELOPER]
+    ], role: [EUserRole.DEVELOPER]
   },
   {
     label: 'Logs', icon: '📝', basePath: '/admin/logs', children: [], role: [EUserRole.ADMIN, EUserRole.DEVELOPER]

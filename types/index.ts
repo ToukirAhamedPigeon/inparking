@@ -95,6 +95,10 @@ export interface IZone {
   updatedAt: Date;
 }
 
+export interface ZoneWithImages extends IZone {
+  images: IImage[];
+}
+
 export interface IAllotment {
   _id: Types.ObjectId;
   slotId: ISlot;

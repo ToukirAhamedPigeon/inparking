@@ -143,13 +143,13 @@ export default function EditUserForm({ user, onClose, onSuccess }: EditUserFormP
        <div className="flex flex-col md:flex-row gap-2">
         {/* Name Field */}
             <div className="w-full md:w-1/2 space-y-1">
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name <span className="text-red-500">*</span></label>
                 <Input id="name" placeholder="Name" {...register('name')} />
                 {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
             </div>
           {/* Email Field */}
             <div className="w-full md:w-1/2 space-y-1">
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email <span className="text-red-500">*</span></label>
                 <div className="relative">
                     <Input
                     id="email"
@@ -173,14 +173,14 @@ export default function EditUserForm({ user, onClose, onSuccess }: EditUserFormP
         <div className="flex flex-col md:flex-row gap-2">
         {/* Password */}
         <div className="w-full md:w-1/3 space-y-1">
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password <span className="text-red-500">*</span></label>
           <Input type="password" id="password" placeholder="Password" {...register('password')} />
           {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
         </div>
 
         {/* Role */}
         <div className="w-full md:w-1/3 space-y-1">
-          <label htmlFor="role" className="block text-sm font-medium text-gray-700">Role</label>
+          <label htmlFor="role" className="block text-sm font-medium text-gray-700">Role <span className="text-red-500">*</span></label>
           <Select defaultValue={user.role} onValueChange={(val) => setValue('role', val as EUserRole)}>
             <SelectTrigger id="role">
               <SelectValue placeholder="Select Role" />
@@ -195,7 +195,7 @@ export default function EditUserForm({ user, onClose, onSuccess }: EditUserFormP
         </div>
             {/* Status */}
             <div className="w-full md:w-1/3 space-y-1">
-            <label htmlFor="isActive" className="block text-sm font-medium text-gray-700">Status</label>
+            <label htmlFor="isActive" className="block text-sm font-medium text-gray-700">Status <span className="text-red-500">*</span></label>
             <Select defaultValue={user.isActive ? 'active' : 'inactive'} onValueChange={(val) => setValue('isActive', val)}>
                 <SelectTrigger id="isActive">
                 <SelectValue placeholder="Select Status" />

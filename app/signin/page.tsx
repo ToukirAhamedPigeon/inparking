@@ -48,7 +48,6 @@ export default function SignInPage() {
       const responseData = await res.json()
 
     // Save authUser in localStorage
-    console.log('responseData', responseData)
     localStorage.setItem('authUser', JSON.stringify(responseData.user))
 
     // Optionally update context if you use AuthContext
