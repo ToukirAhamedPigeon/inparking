@@ -18,7 +18,13 @@ import { deleteImage, uploadAndResizeImage } from '@/lib/imageUploder'
 import { getCreatedAtId } from '@/lib/formatDate'
 import { omitFields } from '@/lib/helpers'
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+type RouteParams = {
+  params: {
+    id: string
+  }
+}
+
+export async function GET(req: NextRequest, { params }: RouteParams) {
   const { id } = params;
   const authHeader = req.headers.get('authorization')
   const token = authHeader?.split(' ')[1]
