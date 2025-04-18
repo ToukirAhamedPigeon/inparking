@@ -20,7 +20,6 @@ import { omitFields } from '@/lib/helpers'
 
 
 export async function GET(req:NextRequest, { params }: {params: Promise<{ id: string }>}) {
-  console.log(req)
   const { id } = await params;
   const authHeader = req.headers.get('authorization')
   const token = authHeader?.split(' ')[1]
@@ -56,8 +55,9 @@ export async function GET(req:NextRequest, { params }: {params: Promise<{ id: st
         }
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  console.log(req)
+  const { id } = await params;
   const authHeader = req.headers.get('authorization')
   const token = authHeader?.split(' ')[1]
 
