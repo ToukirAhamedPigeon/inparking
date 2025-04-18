@@ -17,9 +17,11 @@ import bcrypt from 'bcryptjs'
 import { deleteImage, uploadAndResizeImage } from '@/lib/imageUploder'
 import { getCreatedAtId } from '@/lib/formatDate'
 import { omitFields } from '@/lib/helpers'
-export async function GET(req: NextRequest, context: { params: { id: string } }) {
-    const { params } = context 
-    const authHeader = req.headers.get('authorization')
+export async function GET(
+    request: Request,
+    { params }: { params: Promise<{ id: string }> }
+  ) {
+    const authHeader = request.headers.get('authorization')
     const token = authHeader?.split(' ')[1]
   
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
