@@ -36,8 +36,8 @@ export async function GET(req: NextRequest) {
             { contactNo: { $regex: q, $options: 'i' } },
             { latitude: { $regex: q, $options: 'i' } },
             { longitude: { $regex: q, $options: 'i' } },
-            { createdBy: { $regex: q, $options: 'i' } },
-            { updatedBy: { $regex: q, $options: 'i' } },
+            { 'createdBy.name': { $regex: q, $options: 'i' } },
+            { 'updatedBy.name': { $regex: q, $options: 'i' } },
           ],
         }
       : {}

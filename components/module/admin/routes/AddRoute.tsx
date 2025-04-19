@@ -1,6 +1,6 @@
 'use client'
 
-import { useForm, FormProvider, useFieldArray } from 'react-hook-form'  // Make sure FormProvider is imported
+import { useForm, FormProvider, useFieldArray, Controller } from 'react-hook-form'  // Make sure FormProvider is imported
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useState } from 'react'
@@ -12,6 +12,7 @@ import { toast } from 'sonner'
 import api from '@/lib/axios'
 import { Textarea } from '@/components/ui/textarea'
 import { FaPhotoVideo } from 'react-icons/fa'
+import CustomSelect from "@/components/custom/CustomSelect";
 
 const schema = z.object({
   fromAddress: z.string().min(1, 'From Address is required'),
@@ -99,7 +100,7 @@ export default function AddRoute({ routeData }: { routeData?: any }) {
         }
       })
 
-      const res = await api.post('/zones/add', formData, {
+      const res = await api.post('/routes/add', formData, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
@@ -109,13 +110,13 @@ export default function AddRoute({ routeData }: { routeData?: any }) {
       const result = res.data
 
       if (!result) {
-        throw new Error(result.message || 'Add Zone failed')
+        throw new Error(result.message || 'Add Route failed')
       }
 
-      toast.success('Zone added successfully!')
+      toast.success('Route added successfully!')
 
     } catch (error: any) {
-      toast.error(error.message || 'Something went wrong during adding zone')
+      toast.error(error.message || 'Something went wrong during adding route')
     } finally {
       setSubmitLoading(false)
     }
@@ -140,8 +141,50 @@ export default function AddRoute({ routeData }: { routeData?: any }) {
     >
       <FormProvider {...methods}>  {/* Pass the whole methods object here */}
         <form onSubmit={handleSubmit(onSubmit, onInvalid)} className="bg-gradient-to-br from-white via-gray-100 to-white shadow-xl rounded-2xl p-6 w-full max-w-xl md:max-w-[800px] space-y-4">
-          <h2 className="text-2xl font-bold text-gray-700 text-center">Add New Zone</h2>
-
+          <h2 className="text-2xl font-bold text-gray-700 text-center">Add New Route</h2>
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="space-y-1 w-full md:w-2/3">
+              <label htmlFor="toZoneId" className="block text-sm font-medium text-gray-700">To Zone <span className="text-red-500">*</span></label>
+              <Controller
+                name="toZoneId" // This should match the field name in your form schema
+                render={({ field, fieldState }) => (
+                  <>
+                    <CustomSelect
+                      value={field.value}
+                      onChange={field.onChange}
+                      apiUrl="/zones/search"
+                      filter={{}} // optional filters like { parentLotId: "123" }
+                      multiple={false} // or true for multi-select
+                      optionValueKey="_id"
+                      optionLabelKeys={["name", "address"]}
+                      optionLabelSeparator=", "
+                      placeholder="Select Zone"
+                    />
+                    {/* Error handling */}
+                    {fieldState?.error && (
+                      <p className="text-red-500 text-sm">{fieldState?.error && 'To Zone is required'}</p>
+                    )}
+                  </>
+                )}
+              />
+            </div>
+            <div className="space-y-1 w-full md:w-1/3">
+                <label htmlFor="isActive" className="block text-sm font-medium text-gray-700">Status <span className="text-red-500">*</span></label>
+                <Select
+                  defaultValue={'active'}
+                  onValueChange={(val) => setValue('isActive', val === 'active')}
+                >
+                  <SelectTrigger id="isActive">
+                    <SelectValue placeholder="Select Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="inactive">Inactive</SelectItem>
+                  </SelectContent>
+                </Select>
+                {errors.isActive && <p className="text-red-500 text-sm">{errors.isActive.message}</p>}
+              </div>
+          </div>
           {/* Name Field */}
           <div className="space-y-1">
             <label htmlFor="fromAddress" className="block text-sm font-medium text-gray-700">From Address <span className="text-red-500">*</span></label>
@@ -175,26 +218,6 @@ export default function AddRoute({ routeData }: { routeData?: any }) {
               {...register('description')}
             />
             {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
-          </div>
-
-          {/* Latitude and Longitude */}
-          <div className="flex flex-col md:flex-row gap-4">
-          <div className="space-y-1 w-full md:w-1/3">
-              <label htmlFor="isActive" className="block text-sm font-medium text-gray-700">Status <span className="text-red-500">*</span></label>
-              <Select
-                defaultValue={'active'}
-                onValueChange={(val) => setValue('isActive', val === 'active')}
-              >
-                <SelectTrigger id="isActive">
-                  <SelectValue placeholder="Select Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
-                </SelectContent>
-              </Select>
-              {errors.isActive && <p className="text-red-500 text-sm">{errors.isActive.message}</p>}
-            </div>
           </div>
 
           {/* Image Subform (dynamic images) */}

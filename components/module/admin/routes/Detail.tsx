@@ -31,7 +31,7 @@ export default function Detail({ route }: { route: IRoute }) {
             </TableRow>
             <TableRow>
               <TableCell><strong>To Zone:</strong></TableCell>
-              <TableCell>{route.toZoneId.name}</TableCell>
+              <TableCell>{route.toZoneId.name+', '+route.toZoneId.address}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell><strong>Description:</strong></TableCell>

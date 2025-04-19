@@ -30,14 +30,13 @@ export async function GET(req: NextRequest) {
     const searchQuery = q
       ? {
           $or: [
-            { name: { $regex: q, $options: 'i' } },
-            { address: { $regex: q, $options: 'i' } },
-            { contactName: { $regex: q, $options: 'i' } },
-            { contactNo: { $regex: q, $options: 'i' } },
-            { latitude: { $regex: q, $options: 'i' } },
-            { longitude: { $regex: q, $options: 'i' } },
-            { createdBy: { $regex: q, $options: 'i' } },
-            { updatedBy: { $regex: q, $options: 'i' } },
+            { fromAddress: { $regex: q, $options: 'i' } },
+            { toAddress: { $regex: q, $options: 'i' } },
+            { description: { $regex: q, $options: 'i' } },
+            { 'createdBy.name': { $regex: q, $options: 'i' } },
+            { 'updatedBy.name': { $regex: q, $options: 'i' } },
+            { 'toZoneId.name': { $regex: q, $options: 'i' } },
+            { 'toZoneId.address': { $regex: q, $options: 'i' } },
           ],
         }
       : {}
@@ -46,6 +45,7 @@ export async function GET(req: NextRequest) {
         Route.find(searchQuery)
           .populate('createdBy')
           .populate('updatedBy')
+          .populate('toZoneId')
           .sort({ [sortBy]: sortOrder })
           .skip(skip)
           .limit(limit)

@@ -23,24 +23,19 @@ export async function POST(req: Request) {
     await dbConnect()
 
     const formData = await req.formData()
-
-    const name = formData.get('name') as string
-    const address = formData.get('address') as string
-    const latitude = formData.get('latitude') as string
-    const longitude = formData.get('longitude') as string
-    const contactName = formData.get('contactName') as string
-    const contactNo = formData.get('contactNo') as string
+    const fromAddress = formData.get('fromAddress') as string
+    const toAddress = formData.get('toAddress') as string
+    const toZoneId = formData.get('toZoneId') as string
+    const description = formData.get('description') as string
     const isActive = formData.get('isActive') === 'true'
     const createdBy = authUserId
     const updatedBy = authUserId
 
     const newRoute = await Route.create({
-      name,
-      address,
-      latitude,
-      longitude,
-      contactName,
-      contactNo,
+      fromAddress,
+      toAddress,
+      toZoneId,
+      description,
       isActive,
       createdBy,
       updatedBy,
@@ -73,7 +68,7 @@ export async function POST(req: Request) {
 
     // Log zone creation
     await logAction({
-      detail: `Route created: ${newRoute.name}`,
+      detail: `Route created: ${newRoute.fromAddress} to ${newRoute.toAddress}`,
       changes: JSON.stringify({
         after: {
           ...newRoute.toObject(),

@@ -1,12 +1,11 @@
 'use client'
 
-import { useForm, FormProvider, useFieldArray } from 'react-hook-form'  // Make sure FormProvider is imported
+import { useForm, FormProvider, useFieldArray, Controller } from 'react-hook-form'  // Make sure FormProvider is imported
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useState } from 'react'
 import { ImageSubForm } from '@/components/custom/ImageSubForm'
 import { motion } from 'framer-motion'
-import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
 import { toast } from 'sonner'
@@ -14,6 +13,7 @@ import api from '@/lib/axios'
 import { Textarea } from '@/components/ui/textarea'
 import { FaPhotoVideo } from 'react-icons/fa'
 import { IRoute, IZone } from '@/types'
+import CustomSelect from '@/components/custom/CustomSelect'
 
 const schema = z.object({
   fromAddress: z.string().min(1, 'From Address is required'),
@@ -64,7 +64,7 @@ const handleRemoveImage = (index: number) => {
     defaultValues: {
       fromAddress: routeData?.fromAddress || '',
       toAddress: routeData?.toAddress || '',
-      toZoneId: routeData?.toZoneId?.toString() || '',
+      toZoneId:routeData?.toZoneId?._id.toString() || '',
       description: routeData?.description || '',
       isActive: routeData?.isActive ?? true,
       images: routeData?.images?.length
@@ -167,7 +167,49 @@ const handleRemoveImage = (index: number) => {
     >
       <FormProvider {...methods}>  {/* Pass the whole methods object here */}
         <form onSubmit={handleSubmit(onSubmit, onInvalid)} className=" p-6 w-full max-w-xl md:max-w-[800px] space-y-4">
-
+        <div className="flex flex-col md:flex-row gap-4">
+            <div className="space-y-1 w-full md:w-2/3">
+              <label htmlFor="toZoneId" className="block text-sm font-medium text-gray-700">To Zone <span className="text-red-500">*</span></label>
+              <Controller
+                name="toZoneId" // This should match the field name in your form schema
+                render={({ field, fieldState }) => (
+                  <>
+                    <CustomSelect
+                      value={field.value}
+                      onChange={field.onChange}
+                      apiUrl="/zones/search"
+                      filter={{}} // optional filters like { parentLotId: "123" }
+                      multiple={false} // or true for multi-select
+                      optionValueKey="_id"
+                      optionLabelKeys={["name", "address"]}
+                      optionLabelSeparator=", "
+                      placeholder="Select Zone"
+                    />
+                    {/* Error handling */}
+                    {fieldState?.error && (
+                      <p className="text-red-500 text-sm">{fieldState?.error.message}</p>
+                    )}
+                  </>
+                )}
+              />
+            </div>
+            <div className="space-y-1 w-full md:w-1/3">
+                <label htmlFor="isActive" className="block text-sm font-medium text-gray-700">Status <span className="text-red-500">*</span></label>
+                <Select
+                  defaultValue={'active'}
+                  onValueChange={(val) => setValue('isActive', val === 'active')}
+                >
+                  <SelectTrigger id="isActive">
+                    <SelectValue placeholder="Select Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="inactive">Inactive</SelectItem>
+                  </SelectContent>
+                </Select>
+                {errors.isActive && <p className="text-red-500 text-sm">{errors.isActive.message}</p>}
+              </div>
+          </div>
           {/* From Address Field */}
           <div className="space-y-1">
             <label htmlFor="fromAddress" className="block text-sm font-medium text-gray-700">From Address <span className="text-red-500">*</span></label>
@@ -202,27 +244,6 @@ const handleRemoveImage = (index: number) => {
             />
             {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
           </div>
-
-          {/* Status */}
-          <div className="flex flex-col md:flex-row gap-4">
-          <div className="space-y-1 w-full md:w-1/3">
-              <label htmlFor="isActive" className="block text-sm font-medium text-gray-700">Status <span className="text-red-500">*</span></label>
-              <Select
-                defaultValue={routeData?.isActive ? 'active' : 'inactive'}
-                onValueChange={(val) => setValue('isActive', val === 'active')}
-              >
-                <SelectTrigger id="isActive">
-                  <SelectValue placeholder="Select Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
-                </SelectContent>
-              </Select>
-              {errors.isActive && <p className="text-red-500 text-sm">{errors.isActive.message}</p>}
-            </div>
-            </div>
-
           {/* Image Subform (dynamic images) */}
           <div className="space-y-4">
             <h3 className="text-lg font-medium text-gray-700">Images</h3>

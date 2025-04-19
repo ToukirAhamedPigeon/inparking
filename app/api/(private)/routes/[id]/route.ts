@@ -29,6 +29,7 @@ export async function GET(req:NextRequest, { params }: {params: Promise<{ id: st
             const route = await Route.findById(id)
             .populate('createdBy')
             .populate('updatedBy')
+            .populate('toZoneId')
             .lean()
       
           if (!route) {
@@ -179,27 +180,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
 
 
     // Check for references in other collections
-    const referenced = await Promise.any([
-      Route.exists({ $or: [{ toZoneId: routeId }] }),
-      Slot.exists({ $or: [{ routeId: routeId }] }),
-      Allotment.exists({ $or: [{ routeId: routeId }] }),
-    ])
 
-    if (referenced) {
-      route.isActive = false
-      await route.save()
-
-      const afterRoute = await Route.findById(routeId)
-      // Log inactivation
-      await logAction({
-        detail: `Route inactivated: ${route.name}`,
-        changes: JSON.stringify({ before:omitFields(route.toObject?.() || route, ['createdAtId','__v']), after: omitFields(afterRoute.toObject?.() || afterRoute, ['createdAtId','__v']) }),
-        actionType: EActionType.UPDATE,
-        collectionName: 'Route',
-        objectId: route._id.toString(),
-      })
-      return NextResponse.json({ status: 'inactive' })
-    } else {
       // Delete profile picture from database and file system
       const existingImages = await Image.find({
         modelType: EModelType.ROUTE,
@@ -219,8 +200,6 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
         objectId: route._id.toString(),
       })
       return NextResponse.json({ status: 'deleted' })
-    }
-
   } catch (err) {
     console.error('Error:', err)
     return NextResponse.json({ error: 'Server Error' }, { status: 500 })

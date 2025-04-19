@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { FaSort, FaSortUp, FaSortDown } from 'react-icons/fa'
 import { useAuth } from '@/contexts/AuthContext'
-import { IRoute, IZone } from '@/types'
+import { IRoute } from '@/types'
 import { useTable } from '@/hooks/useTable'
 import { useDetailModal } from '@/hooks/useDetailModal'
 import { useEditModal } from '@/hooks/useEditModal'
@@ -96,7 +96,11 @@ export default function RouteListTable() {
     },
     {
       header: 'To Zone',
-      accessorKey: 'toZoneId',
+      accessorKey: 'toZoneId.name',
+      cell: ({ row }) => {
+        const zone = row.original.toZoneId;
+        return typeof zone === 'object' ? zone.name+', '+zone.address : 'Unknown';
+      },
     },
     {
       header: 'Description',
