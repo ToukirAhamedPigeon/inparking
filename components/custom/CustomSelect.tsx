@@ -1,6 +1,3 @@
-// components/CustomSelect.tsx
-"use client";
-
 import { useState, useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import {
@@ -43,7 +40,9 @@ export default function CustomSelect({
   placeholder = "Select option(s)",
 }: CustomSelectProps) {
   const [search, setSearch] = useState("");
+  const [open, setOpen] = useState(false); // <-- control popover open/close
   const inputRef = useRef<HTMLInputElement>(null);
+
   const {
     options,
     loading,
@@ -72,7 +71,7 @@ export default function CustomSelect({
   };
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <div className="relative w-full">
           <Input
@@ -87,6 +86,7 @@ export default function CustomSelect({
               : getOptionLabel(options.find((opt) => opt[optionValueKey] === selected) || {}) || ""
             }
             placeholder={placeholder}
+            onClick={() => setOpen(true)}
           />
           <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 w-4 h-4 pointer-events-none" />
         </div>
@@ -118,6 +118,7 @@ export default function CustomSelect({
                       }
                     } else {
                       setSelected(opt[optionValueKey]);
+                      setOpen(false); // <-- auto close on single selection
                     }
                   }}
                   className={`cursor-pointer hover:bg-blue-100 !rounded-none ${

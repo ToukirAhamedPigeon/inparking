@@ -7,7 +7,7 @@ const slotSchema = new Schema<ISlot>(
     slotNumber: { type: String, required: true },
     slotDetail: { type: String },
     images: [{ type: Types.ObjectId, ref: 'Image' }],
-    qrString: { type: String, required: true, unique: true },
+    qrString: { type: String, required: false, unique: true },
     isActive: { type: Boolean, default: true },
     createdBy: { type: Types.ObjectId, ref: 'User', required: true },
     updatedBy: { type: Types.ObjectId, ref: 'User', required: true },

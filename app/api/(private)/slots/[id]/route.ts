@@ -1,23 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import dbConnect from '@/lib/dbConnect'
-import User from '@/models/User'
 import Image from '@/models/Image'
 import { Types } from 'mongoose'
 import jwt from 'jsonwebtoken'
 import Slot from '@/models/Slot'
 import Allotment from '@/models/Allotment'
-import Log from '@/models/Log'
-import fs from 'fs'
-import path from 'path'
 import { logAction } from '@/lib/logger'
-import { EActionType, EModelType, EUserRole } from '@/types'
-import bcrypt from 'bcryptjs'
+import { EActionType, EModelType } from '@/types'
 import { deleteImage, uploadAndResizeImage } from '@/lib/imageUploder'
-import { getCreatedAtId } from '@/lib/formatDate'
 import { omitFields } from '@/lib/helpers'
-import Zone from '@/models/Zone'
-import Route from '@/models/Route'
-
 
 export async function GET(req:NextRequest, { params }: {params: Promise<{ id: string }>}) {
   const { id } = await params;
@@ -33,6 +24,7 @@ export async function GET(req:NextRequest, { params }: {params: Promise<{ id: st
           }
           try {
             const slot = await Slot.findById(id)
+            .populate('zoneId')
             .populate('createdBy')
             .populate('updatedBy')
             .lean()
@@ -71,6 +63,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   try {
     jwt.verify(token, process.env.ACCESS_SECRET!)
     const slotId = id
+    await dbConnect()
     const slot = await Slot.findById(slotId)
     if (!slot) {
       return NextResponse.json({ error: 'Slot not found' }, { status: 404 })
@@ -82,6 +75,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       slotNumber: formData.get('slotNumber'),
       slotDetail: formData.get('slotDetail'),
       isActive: formData.get('isActive') === 'true',
+      zoneId: formData.get('zoneId'),
     }
 
     const deletedImageIds = JSON.parse(formData.get('deletedImageIds') as string || '[]')
@@ -144,7 +138,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
     updates.images = updatedImages
 
-    const updatedSlot = await Slot.findByIdAndUpdate(slotId, updates, { new: true, strict: false }).populate('images')
+    const updatedSlot = await Slot.findByIdAndUpdate(slotId, updates, { new: true, strict: false }).populate('images').populate('zoneId')
 
     await logAction({
       detail: `Slot updated: ${updatedSlot.slotNumber}`,
@@ -176,7 +170,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     jwt.verify(token, process.env.ACCESS_SECRET!)
     await dbConnect()
 
-    const slot = await Slot.findById(slotId)
+    const slot = await Slot.findById(slotId).populate('zoneId')
     if (!slot) {
       return NextResponse.json({ error: 'Slot not found' }, { status: 404 })
     }
@@ -184,7 +178,6 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
 
     // Check for references in other collections
     const referenced = await Promise.any([
-      Route.exists({ $or: [{ slotId: slotId }] }),
       Allotment.exists({ $or: [{ slotId: slotId }] }),
     ])
 
@@ -192,7 +185,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
       slot.isActive = false
       await slot.save()
 
-      const afterSlot = await Slot.findById(slotId)
+      const afterSlot = await Slot.findById(slotId).populate('zoneId')
       // Log inactivation
       await logAction({
         detail: `Slot inactivated: ${slot.slotNumber}`,

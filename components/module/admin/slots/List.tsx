@@ -95,12 +95,12 @@ export default function SlotListTable() {
       accessorKey: 'slotDetail',
     },
     {
-      header: 'QR String',
-      accessorKey: 'qrString',
-    },
-    {
-      header: 'Status',
-      accessorKey: 'isActive',
+      header: 'To Zone',
+      accessorKey: 'toZoneId.name',
+      cell: ({ row }) => {
+        const zone = row.original.zoneId;
+        return typeof zone === 'object' ? zone.name+', '+zone.address : 'Unknown';
+      },
     },
     {
       header: 'Status',

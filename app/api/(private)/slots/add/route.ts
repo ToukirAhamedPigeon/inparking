@@ -26,6 +26,8 @@ export async function POST(req: Request) {
 
     const slotNumber = formData.get('slotNumber') as string
     const slotDetail = formData.get('slotDetail') as string
+    const zoneId = formData.get('zoneId') as string
+    const qrString = (formData.get('zoneId') as string) + '-' + (formData.get('slotNumber') as string)
     const isActive = formData.get('isActive') === 'true'
     const createdBy = authUserId
     const updatedBy = authUserId
@@ -34,6 +36,8 @@ export async function POST(req: Request) {
       slotNumber, 
       slotDetail,
       isActive,
+      zoneId,
+      qrString,
       createdBy,
       updatedBy,
     })

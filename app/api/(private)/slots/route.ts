@@ -32,9 +32,9 @@ export async function GET(req: NextRequest) {
           $or: [
             { slotNumber: { $regex: q, $options: 'i' } },
             { slotDetail: { $regex: q, $options: 'i' } },
-            { qrString: { $regex: q, $options: 'i' } },
-            { createdBy: { $regex: q, $options: 'i' } },
-            { updatedBy: { $regex: q, $options: 'i' } },
+            { 'zoneId.name': { $regex: q, $options: 'i' } },
+            { 'createdBy.name': { $regex: q, $options: 'i' } },
+            { 'updatedBy.name': { $regex: q, $options: 'i' } },
           ],
         }
       : {}
@@ -43,6 +43,7 @@ export async function GET(req: NextRequest) {
         Slot.find(searchQuery)
           .populate('createdBy')
           .populate('updatedBy')
+          .populate('zoneId')
           .sort({ [sortBy]: sortOrder })
           .skip(skip)
           .limit(limit)

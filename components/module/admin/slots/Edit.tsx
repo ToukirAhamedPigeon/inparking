@@ -1,6 +1,6 @@
 'use client'
 
-import { useForm, FormProvider, useFieldArray } from 'react-hook-form'  // Make sure FormProvider is imported
+import { useForm, FormProvider, useFieldArray, Controller } from 'react-hook-form'  // Make sure FormProvider is imported
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useState } from 'react'
@@ -14,11 +14,13 @@ import api from '@/lib/axios'
 import { Textarea } from '@/components/ui/textarea'
 import { FaPhotoVideo } from 'react-icons/fa'
 import { ISlot } from '@/types'
+import CustomSelect from '@/components/custom/CustomSelect'
 
 const schema = z.object({
   slotNumber: z.string().min(1, 'Slot Number is required'),
   slotDetail: z.string().min(1, 'Slot Detail is required'),
   isActive: z.boolean().optional(),
+  zoneId: z.string().optional(),
   images: z
     .array(
       z.object({
@@ -63,6 +65,7 @@ const handleRemoveImage = (index: number) => {
       slotNumber: slotData?.slotNumber || '',
       slotDetail: slotData?.slotDetail || '',
       isActive: slotData?.isActive ?? true,
+      zoneId: slotData?.zoneId?._id.toString() || '',
       images: slotData?.images?.length
         ? slotData.images.map((img: any) => ({
             id: img._id,
@@ -98,6 +101,7 @@ const handleRemoveImage = (index: number) => {
       const formData = new FormData()
       formData.append('slotNumber', data.slotNumber)
       formData.append('slotDetail', data.slotDetail)
+      formData.append('zoneId', data.zoneId || '')
       formData.append('isActive', data.isActive ? 'true' : 'false')
       formData.append('deletedImageIds', JSON.stringify(deletedImageIds))
 
@@ -168,6 +172,49 @@ const handleRemoveImage = (index: number) => {
             <Input id="slotNumber" placeholder="Slot Number" {...register('slotNumber')} />
             {errors.slotNumber && <p className="text-red-500 text-sm">{errors.slotNumber.message}</p>}
           </div>
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="space-y-1 w-full md:w-2/3">
+              <label htmlFor="zoneId" className="block text-sm font-medium text-gray-700">Zone <span className="text-red-500">*</span></label>
+              <Controller
+                    name="zoneId" // This should match the field name in your form schema
+                    render={({ field, fieldState }) => (
+                      <>
+                        <CustomSelect
+                          value={field.value}
+                          onChange={field.onChange}
+                          apiUrl="/zones/search"
+                          filter={{}} // optional filters like { parentLotId: "123" }
+                          multiple={false} // or true for multi-select
+                          optionValueKey="_id"
+                          optionLabelKeys={["name", "address"]}
+                          optionLabelSeparator=", "
+                          placeholder="Select Zone"
+                        />
+                        {/* Error handling */}
+                        {fieldState?.error && (
+                          <p className="text-red-500 text-sm">{fieldState?.error && 'To Zone is required'}</p>
+                        )}
+                      </>
+                    )}
+                  />
+                </div>
+                <div className="space-y-1 w-full md:w-1/3">
+                    <label htmlFor="isActive" className="block text-sm font-medium text-gray-700">Status <span className="text-red-500">*</span></label>
+                    <Select
+                      defaultValue={'active'}
+                      onValueChange={(val) => setValue('isActive', val === 'active')}
+                    >
+                      <SelectTrigger id="isActive">
+                        <SelectValue placeholder="Select Status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="active">Active</SelectItem>
+                        <SelectItem value="inactive">Inactive</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    {errors.isActive && <p className="text-red-500 text-sm">{errors.isActive.message}</p>}
+                  </div>
+              </div>
 
           {/* Slot Detail Field */}
           <div className="space-y-1"> 
@@ -179,26 +226,6 @@ const handleRemoveImage = (index: number) => {
               {...register('slotDetail')}
             />
             {errors.slotDetail && <p className="text-red-500 text-sm">{errors.slotDetail.message}</p>}
-          </div>
-
-          {/* Status */}
-          <div className="flex flex-col md:flex-row gap-4">
-          <div className="space-y-1 w-full md:w-1/3">
-              <label htmlFor="isActive" className="block text-sm font-medium text-gray-700">Status <span className="text-red-500">*</span></label>
-              <Select
-                defaultValue={slotData?.isActive ? 'active' : 'inactive'}
-                onValueChange={(val) => setValue('isActive', val === 'active')}
-              >
-                <SelectTrigger id="isActive">
-                  <SelectValue placeholder="Select Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
-                </SelectContent>
-              </Select>
-              {errors.isActive && <p className="text-red-500 text-sm">{errors.isActive.message}</p>}
-            </div>
           </div>
 
           {/* Image Subform (dynamic images) */}

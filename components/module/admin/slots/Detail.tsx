@@ -26,16 +26,16 @@ export default function Detail({ slot }: { slot: ISlot }) {
               <TableCell>{slot.slotNumber}</TableCell>
             </TableRow>
             <TableRow>
+              <TableCell><strong>Zone:</strong></TableCell>
+              <TableCell>{slot.zoneId.name + ', ' + slot.zoneId.address}</TableCell>
+            </TableRow>
+            <TableRow>
               <TableCell><strong>Slot Detail:</strong></TableCell>
               <TableCell>{slot.slotDetail}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell><strong>Status:</strong></TableCell>
               <TableCell>{slot.isActive ? 'Active' : 'Inactive'}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell><strong>QR String:</strong></TableCell>
-              <TableCell>{slot.qrString}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell><strong>Created By:</strong></TableCell>
