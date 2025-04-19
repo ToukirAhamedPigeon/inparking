@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { Home } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 type Crumb = {
   label: string;
@@ -12,15 +13,17 @@ type BreadcrumbProps = {
   items: Crumb[];
   title?: string;
   showTitle?: boolean;
+  className?: string;
 };
 
 export default function Breadcrumb({
   items,
   title = '',
   showTitle = true,
+  className = '',
 }: BreadcrumbProps) {
   return (
-    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 py-4">
+    <div className={cn("flex flex-col md:flex-row md:items-center md:justify-between gap-2 py-4", className)}>
       {showTitle && (
         <h1 className="text-lg md:text-xl font-bold text-gray-800">{title}</h1>
       )}

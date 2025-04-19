@@ -3,6 +3,7 @@
 import Breadcrumb from '@/components/module/admin/layout/Breadcrumb'
 import Protected from '@/components/custom/Protected'
 import { EUserRole } from '@/types';
+import Dashboard from '@/components/module/admin/Dashboard';
 
 
 export default function AdminDashboard() {
@@ -16,7 +17,9 @@ export default function AdminDashboard() {
           items={[
             // Current page (no href)
           ]}
+          className='pb-0'
         />
+        <Dashboard />
       </div>
     </>
     
