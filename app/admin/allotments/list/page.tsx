@@ -4,6 +4,7 @@ import Breadcrumb from '@/components/module/admin/layout/Breadcrumb';
 import React from 'react';
 import { EUserRole } from '@/types';
 import Protected from '@/components/custom/Protected';
+import AllotmentList from '@/components/module/admin/allotments/List';
 export default function List(){
     return (
         <>
@@ -16,6 +17,7 @@ export default function List(){
           { label: 'Allotments' },
         ]}
       />
+      <AllotmentList />
       </div>
       </>
     );
