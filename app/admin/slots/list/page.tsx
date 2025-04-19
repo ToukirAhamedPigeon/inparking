@@ -4,6 +4,7 @@ import Breadcrumb from '@/components/module/admin/layout/Breadcrumb';
 import React from 'react';
 import { EUserRole } from '@/types';
 import Protected from '@/components/custom/Protected';
+import SlotListTable from '@/components/module/admin/slots/List';
 
 export default function List(){
     return (
@@ -17,6 +18,7 @@ export default function List(){
           { label: 'Slots' },
         ]}
       />
+      <SlotListTable />
       </div>
       </>
     );
