@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import dbConnect from '@/lib/dbConnect'
 import jwt from 'jsonwebtoken'
 import Allotment from '@/models/Allotment'
+import { IAllotment } from '@/types'
 export async function GET(req: NextRequest) {
   const authHeader = req.headers.get('authorization')
   const token = authHeader?.split(' ')[1]
@@ -34,10 +35,10 @@ export async function GET(req: NextRequest) {
             { qrString : { $regex: q, $options: 'i' } }, 
             { allotmentFrom: { $regex: q, $options: 'i' } },
             { allotmentTo: { $regex: q, $options: 'i' } }, 
-            { createdBy: { $regex: q, $options: 'i' } },
-            { updatedBy: { $regex: q, $options: 'i' } },
-            { slotId: { $regex: q, $options: 'i' } },
-            { zoneId: { $regex: q, $options: 'i' } },
+            { 'createdBy.name': { $regex: q, $options: 'i' } },
+            { 'updatedBy.name': { $regex: q, $options: 'i' } },
+            { 'slotId.slotNumber': { $regex: q, $options: 'i' } },
+            { 'zoneId.name': { $regex: q, $options: 'i' } },
           ],
         }
       : {}
@@ -51,16 +52,12 @@ export async function GET(req: NextRequest) {
         .sort({ [sortBy]: sortOrder })  // 👈 dynamic sorting
         .skip(skip)
         .limit(limit)
-        .lean(),
+        .lean<IAllotment[]>(),
       Allotment.countDocuments(searchQuery),
     ])
 
     const formatted = allotments.map(allotment => ({
       ...allotment,
-      slotId: allotment.slotId?.name || '',
-      zoneId: allotment.zoneId?.name || '',
-      createdBy: allotment.createdBy?.name || '',
-      updatedBy: allotment.updatedBy?.name || '',
     }))
     return NextResponse.json({ allotments: formatted, totalCount })
 

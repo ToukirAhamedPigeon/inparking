@@ -19,7 +19,7 @@ export async function GET(req:NextRequest) {
                 const limit = parseInt(searchParams.get("limit") || "50");
                 const otherFilters: Record<string, any> = {};
                 searchParams.forEach((value, key) => {
-                  if (!["q", "limit"].includes(key)) {
+                  if (!["q", "limit"].includes(key) && value !== "") {
                     otherFilters[key] = value;
                   }
                 });

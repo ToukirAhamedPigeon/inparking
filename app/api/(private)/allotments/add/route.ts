@@ -1,14 +1,12 @@
 import { NextResponse } from 'next/server'
 import dbConnect from '@/lib/dbConnect'
-import User from '@/models/User'
-import { EActionType, EModelType, EUserRole } from '@/types'
+import { EActionType} from '@/types'
 import { logAction } from '@/lib/logger'
-import { uploadAndResizeImage } from '@/lib/imageUploder'
-import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { getCreatedAtId } from '@/lib/formatDate'
 import { omitFields } from '@/lib/helpers'
 import Allotment from '@/models/Allotment'
+import { getAuthUserIdFromCookie } from '@/lib/getAuthUser'
 
 export async function POST(req: Request) {
   const authHeader = req.headers.get('authorization')
@@ -20,6 +18,7 @@ export async function POST(req: Request) {
         const decoded = jwt.verify(token, process.env.ACCESS_SECRET!)
         try { 
           await dbConnect()
+          const authUserId = await getAuthUserIdFromCookie()
       
           const formData = await req.formData()
           const guestName = formData.get('guestName') as string
@@ -29,13 +28,15 @@ export async function POST(req: Request) {
           const driverContactNo = formData.get('driverContactNo') as string
           const isOwnerDriver = formData.get('isOwnerDriver') === 'true'
           const allotmentFrom = formData.get('allotmentFrom') as string
+          const allotmentFromNum = getCreatedAtId(new Date(allotmentFrom)) as number
           const allotmentTo = formData.get('allotmentTo') as string
-          const qrString = formData.get('qrString') as string
-          const dateTimeFormatId = formData.get('dateTimeFormatId') as string
+          const allotmentToNum = getCreatedAtId(new Date(allotmentTo)) as number
           const slotId = formData.get('slotId') as string
           const zoneId = formData.get('zoneId') as string
-          const createdBy = formData.get('createdBy') as string
-          const updatedBy = formData.get('updatedBy') as string
+          const qrString = slotId+zoneId+allotmentFrom+allotmentTo
+          const dateTimeFormatId = getCreatedAtId(new Date(formData.get('dateTimeFormatId') as string)) as number
+          const createdBy = authUserId
+          const updatedBy = authUserId
 
           // Check email duplication
           const allotmentExists = await Allotment.findOne({ qrString })
@@ -51,7 +52,9 @@ export async function POST(req: Request) {
             driverName,
             driverContactNo,
             isOwnerDriver,
+            allotmentFromNum,
             allotmentFrom,
+            allotmentToNum,
             allotmentTo,
             qrString,
             dateTimeFormatId,
@@ -72,8 +75,8 @@ export async function POST(req: Request) {
       
           return NextResponse.json({ success: true, allotment }, { status: 201 })
         } catch (error) {
-          console.error('Register Error:', error)
-          return NextResponse.json({ success: false, message: 'Registration failed' }, { status: 500 })
+          console.error('Add Allotment Error:', error)
+          return NextResponse.json({ success: false, message: 'Add Allotment failed' }, { status: 500 })
         }
     } catch (err) {
         return NextResponse.json({ error: 'Invalid token' }, { status: 403 })

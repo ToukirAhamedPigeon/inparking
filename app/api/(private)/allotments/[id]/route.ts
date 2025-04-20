@@ -1,23 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import dbConnect from '@/lib/dbConnect'
-import User from '@/models/User'
-import Image from '@/models/Image'
 import { Types } from 'mongoose'
 import jwt from 'jsonwebtoken'
-import Zone from '@/models/Zone'
-import Route from '@/models/Route'
-import Slot from '@/models/Slot'
 import Allotment from '@/models/Allotment'
-import Log from '@/models/Log'
-import fs from 'fs'
-import path from 'path'
 import { logAction } from '@/lib/logger'
-import { EActionType, EModelType, EUserRole } from '@/types'
-import bcrypt from 'bcryptjs'
-import { deleteImage, uploadAndResizeImage } from '@/lib/imageUploder'
-import { getCreatedAtId } from '@/lib/formatDate'
+import { EActionType } from '@/types'
 import { omitFields } from '@/lib/helpers'
-
+import { getAuthUserIdFromCookie } from '@/lib/getAuthUser'
+import { getCreatedAtId } from '@/lib/formatDate'
 
 export async function GET(req:NextRequest, { params }: {params: Promise<{ id: string }>}) {
   const { id } = await params;
@@ -34,7 +24,7 @@ export async function GET(req:NextRequest, { params }: {params: Promise<{ id: st
         }
 
         try {
-            const allotment = await Allotment.findById(id).lean()
+            const allotment = await Allotment.findById(id).populate('slotId').populate('zoneId').populate('createdBy').populate('updatedBy').lean()
 
             if (!allotment) {
               return NextResponse.json({ error: 'Allotment not found' }, { status: 404 })
@@ -43,7 +33,6 @@ export async function GET(req:NextRequest, { params }: {params: Promise<{ id: st
             const formattedAllotment = {
               ...allotment,
             }
-
             return NextResponse.json(formattedAllotment)
           } catch (err) {
             console.error('Error fetching allotment detail:', err)
@@ -65,17 +54,10 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     jwt.verify(token, process.env.ACCESS_SECRET!)
     const allotmentId = id
     const formData = await req.formData()
-
-    const isImageDeleted = formData.get('isImageDeleted') === 'true'
-    const file = formData.get('profilePicture') as File | null
-    const password = formData.get('password') as string
-    const hashedPassword = await bcrypt.hash(password, 10)
-
-
     await dbConnect()
+    const authUserId = await getAuthUserIdFromCookie()
 
     const allotment = await Allotment.findById(allotmentId)
-
     const updates: any = {
       guestName: formData.get('guestName'),
       guestContactNo: formData.get('guestContactNo'),
@@ -84,12 +66,10 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       driverContactNo: formData.get('driverContactNo'),
       isOwnerDriver: formData.get('isOwnerDriver'),
       allotmentFrom: formData.get('allotmentFrom'),
+      allotmentFromNum: getCreatedAtId(new Date(formData.get('allotmentFrom') as string)),
       allotmentTo: formData.get('allotmentTo'),
-      qrString: formData.get('qrString'),
-      dateTimeFormatId: formData.get('dateTimeFormatId'),
-      createdAtId: getCreatedAtId(allotment.createdAt),
-      isActive: formData.get('isActive') === 'true'
-      
+      allotmentToNum: getCreatedAtId(new Date(formData.get('allotmentTo') as string)),
+      updatedBy: authUserId,
     }
 
     if (!allotment) return NextResponse.json({ error: 'Allotment not found' }, { status: 404 })
@@ -129,7 +109,6 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     if (!allotment) {
       return NextResponse.json({ error: 'Allotment not found' }, { status: 404 })
     }
-
 
     // Check for references in other collections
       await Allotment.findByIdAndDelete(allotmentId)

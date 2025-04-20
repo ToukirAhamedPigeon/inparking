@@ -125,7 +125,9 @@ export interface IAllotment {
   driverContactNo?: string;
   isOwnerDriver: boolean;
   allotmentFrom: Date;
+  allotmentFromNum: number;
   allotmentTo: Date;
+  allotmentToNum: number;
   qrString: string;
   createdBy: IUser;
   updatedBy: IUser;

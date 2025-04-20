@@ -215,7 +215,6 @@ const handleRemoveImage = (index: number) => {
                     {errors.isActive && <p className="text-red-500 text-sm">{errors.isActive.message}</p>}
                   </div>
               </div>
-
           {/* Slot Detail Field */}
           <div className="space-y-1"> 
             <label htmlFor="slotDetail" className="block text-sm font-medium text-gray-700">Slot Detail <span className="text-red-500">*</span></label>
@@ -227,6 +226,7 @@ const handleRemoveImage = (index: number) => {
             />
             {errors.slotDetail && <p className="text-red-500 text-sm">{errors.slotDetail.message}</p>}
           </div>
+
 
           {/* Image Subform (dynamic images) */}
           <div className="space-y-4">

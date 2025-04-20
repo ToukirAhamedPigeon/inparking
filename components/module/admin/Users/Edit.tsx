@@ -14,7 +14,7 @@ import Dropzone from 'react-dropzone'
 import { AnimatePresence } from 'framer-motion'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import { checkEmailExists } from '@/lib/helpers'
+import { checkEmailExists } from '@/lib/validations'
 import { useProfilePicture } from '@/hooks/useProfilePicture'
 const schema = z.object({
     name: z.string().min(1, 'Name is required'),

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { FaSort, FaSortUp, FaSortDown } from 'react-icons/fa'
 import { useAuth } from '@/contexts/AuthContext'
-import { IAllotment, IZone } from '@/types'
+import { IAllotment } from '@/types'
 import { useTable } from '@/hooks/useTable'
 import { useDetailModal } from '@/hooks/useDetailModal'
 import { useEditModal } from '@/hooks/useEditModal'
@@ -44,6 +44,7 @@ export default function AllotmentListTable() {
           sortOrder: sortOrder || 'desc',
         },
       })
+      console.log(res.data)
   
       return {
         data: res.data.allotments as IAllotment[],
@@ -87,12 +88,20 @@ export default function AllotmentListTable() {
       ),
     },
     {
-      header: 'Slot Id',
-      accessorKey: 'slotId',
+      header: 'Slot',
+      accessorKey: 'slotId.slotNumber',
+      cell: ({ row }) => {
+        const slot = row.original.slotId;
+        return typeof slot === 'object' ? slot.slotNumber : 'Unknown';
+      },
     },
     {
-      header: 'Zone Id',
-      accessorKey: 'zoneId',
+      header: 'Zone',
+      accessorKey: 'zoneId.name',
+      cell: ({ row }) => {
+        const zone = row.original.zoneId;
+        return typeof zone === 'object' ? zone.name+', '+zone.address : 'Unknown';
+      },
     },
     {
       header: 'Guest Name',
@@ -101,14 +110,6 @@ export default function AllotmentListTable() {
     {
       header: 'Guest Contact No',
       accessorKey: 'guestContactNo',
-    },
-    {
-      header: 'Driver Name',
-      accessorKey: 'driverName',
-    },
-    {
-      header: 'Driver Contact No',
-      accessorKey: 'driverContactNo',
     },
     {
       header: 'Is Owner Driver',
@@ -120,6 +121,14 @@ export default function AllotmentListTable() {
       ),
     },
     {
+      header: 'Driver Name',
+      accessorKey: 'driverName',
+    },
+    {
+      header: 'Driver Contact No',
+      accessorKey: 'driverContactNo',
+    },
+    {
       header: 'Allotment From',
       accessorKey: 'allotmentFrom',
       cell: ({ getValue }) => formatDateTime(getValue() as string),
@@ -128,14 +137,6 @@ export default function AllotmentListTable() {
       header: 'Allotment To',
       accessorKey: 'allotmentTo',
       cell: ({ getValue }) => formatDateTime(getValue() as string),
-    },
-    {
-      header: 'QR String',
-      accessorKey: 'qrString',
-    },
-    {
-      header: 'Date Time Format',
-      accessorKey: 'dateTimeFormatId',
     },
     {
       header: 'Created By',
@@ -186,10 +187,10 @@ export default function AllotmentListTable() {
       <TableHeaderActions
         searchValue={globalFilter}
         onSearchChange={setGlobalFilter}
-        onAddNew={() => router.push('/admin/zones/add')}
+        onAddNew={() => router.push('/admin/allotments/add')}
         onPrint={() => window.print()}
-        onExport={() => exportExcel({ data, fileName: 'Zones', sheetName: 'Zones' })}
-        addButtonLabel="Add New Zone"
+        onExport={() => exportExcel({ data, fileName: 'Allotments', sheetName: 'Allotments' })}
+        addButtonLabel="Add New Allotment"
       />
 
       {/* Table */}
@@ -250,7 +251,7 @@ export default function AllotmentListTable() {
       />
 
         {/* Detail Modal */}
-      <Modal isOpen={isModalOpen} onClose={closeDetailModal} title="Zone Details">
+      <Modal isOpen={isModalOpen} onClose={closeDetailModal} title="Allotment Details">
         {selectedItem && (
           <Detail allotment={selectedItem} />
         )}
@@ -260,12 +261,12 @@ export default function AllotmentListTable() {
       <Modal
         isOpen={isEditModalOpen}
         onClose={closeEditModal}
-        title="Edit Allotment"
+        title="Edit Slot Allotment"
         titleClassName="text-2xl font-bold text-gray-700 text-center"
       >
         {allotmentToEdit && (
           <EditAllotmentForm
-            allotment={allotmentToEdit}
+            allotmentData={allotmentToEdit}
             onClose={closeEditModal}
             onSuccess={() => {
               closeEditModal()

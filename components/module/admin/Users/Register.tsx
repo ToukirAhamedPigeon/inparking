@@ -13,7 +13,7 @@ import Dropzone from 'react-dropzone'
 import Image from 'next/image'
 import { toast } from 'sonner'
 import api from '@/lib/axios'
-import { checkEmailExists } from '@/lib/helpers'
+import { checkEmailExists } from '@/lib/validations'
 import { useProfilePicture } from '@/hooks/useProfilePicture'
 
 const schema = z.object({

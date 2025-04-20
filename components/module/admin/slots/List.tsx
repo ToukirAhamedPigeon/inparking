@@ -95,8 +95,8 @@ export default function SlotListTable() {
       accessorKey: 'slotDetail',
     },
     {
-      header: 'To Zone',
-      accessorKey: 'toZoneId.name',
+      header: 'Zone',
+      accessorKey: 'zoneId.name',
       cell: ({ row }) => {
         const zone = row.original.zoneId;
         return typeof zone === 'object' ? zone.name+', '+zone.address : 'Unknown';
