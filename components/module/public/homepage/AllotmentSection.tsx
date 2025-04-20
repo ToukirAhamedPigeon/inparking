@@ -5,6 +5,7 @@ import React from 'react';
 import { IAllotment } from '@/types';
 import { formatDateTimeDisplay } from '@/lib/formatDate';
 import RouteMapButtons from './RouteMapButtons';
+import Image from 'next/image';
 
 export default function AllotmentSection({allotment}: {allotment: IAllotment}){
     console.log(allotment)
@@ -112,6 +113,9 @@ export default function AllotmentSection({allotment}: {allotment: IAllotment}){
                 </tr>
             </tbody>
             </table>
+            <div className="flex justify-center mt-4">
+                <Image src="/assets/bg_app.png" alt="Slot Image" width={400} height={400} className="h-40 w-auto md:h-[200px] md:w-auto" />
+            </div>
           </div>
         </motion.div>
     );
