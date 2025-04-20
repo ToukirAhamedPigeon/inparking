@@ -7,7 +7,7 @@ import HeroSection from '@/components/module/public/homepage/HeroSection'
 import CarAnimation from '@/components/module/public/homepage/CarAnimation'
 import NavigateButton from '@/components/module/public/homepage/NavigateButton'
 import FooterSection from '@/components/module/public/homepage/FooterSection'
-import { IAllotment } from '@/types'
+import { IAllotment, IImage } from '@/types'
 import api from '@/lib/axios'
 import AllotmentSection from '@/components/module/public/homepage/AllotmentSection'
 
@@ -17,6 +17,7 @@ export default function HomePage() {
   const [showInput, setShowInput] = useState(false)
   const [showScanner, setShowScanner] = useState(true)
   const [selectedAllotment, setSelectedAllotment] = useState<IAllotment | null>(null)
+  const [routeImages, setRouteImages] = useState<IImage[]>([])
   const [errorMessage, setErrorMessage] = useState("")
 
   const handleScroll = () => {
@@ -50,6 +51,7 @@ export default function HomePage() {
         setErrorMessage("Invalid QR Code. Please scan again.")
       }
       setSelectedAllotment(data.allotment)
+      setRouteImages(data.routeImages)
     } catch (err) {
       setErrorMessage("Invalid QR Code. Please scan again.")
     }
@@ -80,7 +82,7 @@ export default function HomePage() {
 
       {/* Allotment Table */}
       {selectedAllotment && (
-        <AllotmentSection allotment={selectedAllotment} />
+        <AllotmentSection allotment={selectedAllotment} routeImages={routeImages} />
       )}
 
       <FooterSection />

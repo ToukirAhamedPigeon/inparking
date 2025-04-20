@@ -2,12 +2,12 @@
 
 import { motion } from 'framer-motion';
 import React from 'react';
-import { IAllotment } from '@/types';
+import { IAllotment, IImage } from '@/types';
 import { formatDateTimeDisplay } from '@/lib/formatDate';
 import RouteMapButtons from './RouteMapButtons';
 import Image from 'next/image';
 
-export default function AllotmentSection({allotment}: {allotment: IAllotment}){
+export default function AllotmentSection({allotment, routeImages}: {allotment: IAllotment, routeImages: IImage[]}){
     console.log(allotment)
     return (
         <motion.div
@@ -16,7 +16,7 @@ export default function AllotmentSection({allotment}: {allotment: IAllotment}){
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          <RouteMapButtons />
+          <RouteMapButtons routeImages={routeImages} />
           <h2 className="text-xl font-bold text-center mt-6 mb-4 text-blue-700">Allotment Details</h2>
           <div className="overflow-x-auto">
           <table className="min-w-full border border-gray-300 rounded-md">
