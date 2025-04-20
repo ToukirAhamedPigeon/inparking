@@ -13,7 +13,7 @@ import { formatDateTime } from '@/lib/formatDate'
 import { capitalize, exportExcel } from '@/lib/helpers'
 import { Badge } from '@/components/ui/badge'
 import api from '@/lib/axios'
-import Detail from './Detail'
+import LogDetail from './LogDetail'
 
 export default function LogListTable() {
   //Auth Hook
@@ -226,7 +226,7 @@ export default function LogListTable() {
 
         {/* Detail Modal */}
       <Modal isOpen={isModalOpen} onClose={closeDetailModal} title="Log Details">
-        <Detail log={selectedItem} />
+        <LogDetail log={selectedItem} />
       </Modal>
 
     </motion.div>

@@ -12,7 +12,7 @@ import { useEditModal } from '@/hooks/useEditModal'
 import { useDeleteWithConfirm } from '@/hooks/useDeleteWithConfirm'
 import Modal from '@/components/custom/Modal'
 import ConfirmDialog from '@/components/custom/ConfirmDialog'
-import Detail from './Detail'
+import AllotmentDetail from './AllotmentDetail'
 import {RowActions,IndexCell,TableHeaderActions,TablePaginationFooter,TableLoader} from '@/components/custom/Table'
 import { formatDateTime } from '@/lib/formatDate'
 import { exportExcel } from '@/lib/helpers'
@@ -44,7 +44,6 @@ export default function AllotmentListTable() {
           sortOrder: sortOrder || 'desc',
         },
       })
-      console.log(res.data)
   
       return {
         data: res.data.allotments as IAllotment[],
@@ -253,7 +252,7 @@ export default function AllotmentListTable() {
         {/* Detail Modal */}
       <Modal isOpen={isModalOpen} onClose={closeDetailModal} title="Allotment Details">
         {selectedItem && (
-          <Detail allotment={selectedItem} />
+          <AllotmentDetail allotment={selectedItem} />
         )}
       </Modal>
 

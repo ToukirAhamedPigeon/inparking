@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import ChangeSnapshot from './ChangeSnapShot';
 import ChangeDiffTable from './ChangeSnapShot';
 
-export default function Detail({log}: {log: any}){
+export default function LogDetail({log}: {log: any}){
     return (
             <div className="flex flex-col lg:flex-row gap-6">
                 {/* Log Info */}

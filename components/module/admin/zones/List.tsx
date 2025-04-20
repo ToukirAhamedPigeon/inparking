@@ -12,7 +12,7 @@ import { useEditModal } from '@/hooks/useEditModal'
 import { useDeleteWithConfirm } from '@/hooks/useDeleteWithConfirm'
 import Modal from '@/components/custom/Modal'
 import ConfirmDialog from '@/components/custom/ConfirmDialog'
-import Detail from './Detail'
+import ZoneDetail from './ZoneDetail'
 import {RowActions,IndexCell,TableHeaderActions,TablePaginationFooter,TableLoader} from '@/components/custom/Table'
 import { formatDateTime } from '@/lib/formatDate'
 import { exportExcel } from '@/lib/helpers'
@@ -234,7 +234,7 @@ export default function ZoneListTable() {
         {/* Detail Modal */}
       <Modal isOpen={isModalOpen} onClose={closeDetailModal} title="Zone Details">
         {selectedItem && (
-          <Detail zone={selectedItem} />
+          <ZoneDetail zone={selectedItem} />
         )}
       </Modal>
 

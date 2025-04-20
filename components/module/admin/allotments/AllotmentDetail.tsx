@@ -3,10 +3,13 @@
 import { formatDateTime } from '@/lib/formatDate';
 import React from 'react';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
+import SlotDetail from '../slots/SlotDetail';
+import { ISlot } from '@/types';
 
-export default function Detail({allotment}: {allotment: any}){
+export default function AllotmentDetail({allotment}: {allotment: any}){
+    console.log(allotment);
     return (
-            <div className="flex flex-col lg:flex-row gap-6">
+            <div className="flex flex-col gap-6">
                 {/* User Info */}
                 <div className="flex-1 space-y-4">
                     <Table> 
@@ -64,6 +67,10 @@ export default function Detail({allotment}: {allotment: any}){
                         </TableBody>
                     </Table>
                 </div>
+                {/* <div className="flex-1 space-y-4">
+                    <h1 className='text-2xl text-gray-700'>Slot Detail</h1>
+                    <SlotDetail slot={allotment.slotId as ISlot} />
+                </div> */}
             </div>
     );
 };

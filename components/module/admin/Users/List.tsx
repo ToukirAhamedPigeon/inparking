@@ -12,7 +12,7 @@ import { useEditModal } from '@/hooks/useEditModal'
 import { useDeleteWithConfirm } from '@/hooks/useDeleteWithConfirm'
 import Modal from '@/components/custom/Modal'
 import ConfirmDialog from '@/components/custom/ConfirmDialog'
-import Detail from './Detail'
+import UserDetail from './UserDetail'
 import EditUserForm from './Edit'
 import {RowActions,IndexCell,TableHeaderActions,TablePaginationFooter,TableLoader} from '@/components/custom/Table'
 import { formatDateTime } from '@/lib/formatDate'
@@ -223,7 +223,7 @@ export default function UserListTable() {
 
         {/* Detail Modal */}
       <Modal isOpen={isModalOpen} onClose={closeDetailModal} title="User Details">
-        <Detail user={selectedItem} />
+        <UserDetail user={selectedItem} />
       </Modal>
 
       {/* Edit Modal */}  

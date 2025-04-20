@@ -3,13 +3,13 @@
 import { formatDateTime } from '@/lib/formatDate'
 import React, { useState } from 'react'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
-import { IRoute } from '@/types'
+import { IZone } from '@/types'
 import Fancybox from '@/components/custom/FancyBox'
 
-export default function Detail({ route }: { route: IRoute }) {
+export default function ZoneDetail({ zone }: { zone: IZone }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
 
-  const slides = route.images?.map(img => ({
+  const slides = zone.images?.map(img => ({
     src: img.imageUrl,
     title: img.imageTitle,
     description: img.imageDetail,
@@ -17,45 +17,49 @@ export default function Detail({ route }: { route: IRoute }) {
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Route Info Full Width */}
+      {/* Zone Info Full Width */}
       <div className="space-y-4 w-full">
         <Table className="w-full">
           <TableBody>
             <TableRow>
-              <TableCell><strong>From Address:</strong></TableCell>
-              <TableCell>{route.fromAddress}</TableCell>
+              <TableCell><strong>Name:</strong></TableCell>
+              <TableCell>{zone.name}</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell><strong>To Address:</strong></TableCell>
-              <TableCell>{route.toAddress}</TableCell>
+              <TableCell><strong>Address:</strong></TableCell>
+              <TableCell>{zone.address}</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell><strong>To Zone:</strong></TableCell>
-              <TableCell>{route.toZoneId.name+', '+route.toZoneId.address}</TableCell>
+              <TableCell><strong>Contact Name:</strong></TableCell>
+              <TableCell>{zone.contactName}</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell><strong>Description:</strong></TableCell>
-              <TableCell>{route.description}</TableCell>
+              <TableCell><strong>Contact No:</strong></TableCell>
+              <TableCell>{zone.contactNo}</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell><strong>Status:</strong></TableCell>
-              <TableCell>{route.isActive ? 'Active' : 'Inactive'}</TableCell>
+              <TableCell><strong>Latitude:</strong></TableCell>
+              <TableCell>{zone.latitude}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell><strong>Longitude:</strong></TableCell>
+              <TableCell>{zone.longitude}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell><strong>Created By:</strong></TableCell>
-              <TableCell>{route.createdBy.name}</TableCell>
+              <TableCell>{zone.createdBy.name}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell><strong>Created At:</strong></TableCell>
-              <TableCell>{formatDateTime(route.createdAt.toString())}</TableCell>
+              <TableCell>{formatDateTime(zone.createdAt.toString())}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell><strong>Updated By:</strong></TableCell>
-              <TableCell>{route.updatedBy.name}</TableCell>
+              <TableCell>{zone.updatedBy.name}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell><strong>Updated At:</strong></TableCell>
-              <TableCell>{formatDateTime(route.updatedAt.toString())}</TableCell>
+              <TableCell>{formatDateTime(zone.updatedAt.toString())}</TableCell>
             </TableRow>
           </TableBody>
         </Table>
@@ -64,16 +68,16 @@ export default function Detail({ route }: { route: IRoute }) {
       {/* Image Gallery Full Width */}
       {slides.length > 0 && (
         <div className="w-full">
-          <h3 className="text-lg font-semibold mb-2">Route Images</h3>
+          <h3 className="text-lg font-semibold mb-2">Zone Images</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {route.images.map((img, index) => (
+            {zone.images.map((img, index) => (
               <div
                 key={img._id.toString()}
                 className="rounded-xl overflow-hidden shadow-md border bg-white w-full"
               >
                 <Fancybox
                   src={img.imageUrl}
-                  alt={img.imageTitle || 'Route Image'}
+                  alt={img.imageTitle || 'Zone Image'}
                   className="w-full h-48"
                   onClick={() => setOpenIndex(index)}
                 />

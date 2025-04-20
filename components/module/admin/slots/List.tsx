@@ -12,7 +12,7 @@ import { useEditModal } from '@/hooks/useEditModal'
 import { useDeleteWithConfirm } from '@/hooks/useDeleteWithConfirm'
 import Modal from '@/components/custom/Modal'
 import ConfirmDialog from '@/components/custom/ConfirmDialog'
-import Detail from './Detail'
+import SlotDetail from './SlotDetail'
 import {RowActions,IndexCell,TableHeaderActions,TablePaginationFooter,TableLoader} from '@/components/custom/Table'
 import { formatDateTime } from '@/lib/formatDate'
 import { exportExcel } from '@/lib/helpers'
@@ -224,9 +224,9 @@ export default function SlotListTable() {
       />
 
         {/* Detail Modal */}
-      <Modal isOpen={isModalOpen} onClose={closeDetailModal} title="Zone Details">
+      <Modal isOpen={isModalOpen} onClose={closeDetailModal} title="Slot Details">
         {selectedItem && (
-          <Detail slot={selectedItem} />
+          <SlotDetail slot={selectedItem} />
         )}
       </Modal>
 

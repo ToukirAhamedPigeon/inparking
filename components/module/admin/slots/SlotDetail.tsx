@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { ISlot } from '@/types'
 import Fancybox from '@/components/custom/FancyBox'
 
-export default function Detail({ slot }: { slot: ISlot }) {
+export default function SlotDetail({ slot }: { slot: ISlot }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
 
   const slides = slot.images?.map(img => ({

@@ -45,10 +45,22 @@ export async function GET(req: NextRequest) {
 
     const [allotments, totalCount] = await Promise.all([
       Allotment.find(searchQuery)
-        .populate('slotId')
-        .populate('zoneId')
-        .populate('createdBy')
-        .populate('updatedBy')
+          .populate([
+            { path: 'slotId', populate: [
+                { path: 'images' }, // Images related to the slot
+                { path: 'createdBy' }, // CreatedBy user related to the slot
+                { path: 'updatedBy' }, // UpdatedBy user related to the slot
+              ]
+            },
+            { path: 'zoneId', populate: [
+              { path: 'images' }, // Images related to the slot
+              { path: 'createdBy' }, // CreatedBy user related to the slot
+              { path: 'updatedBy' }, // UpdatedBy user related to the slot
+            ]
+          }, // Zone directly on allotment
+            { path: 'createdBy' }, // CreatedBy directly on allotment
+            { path: 'updatedBy' }  // UpdatedBy directly on allotment
+          ])
         .sort({ [sortBy]: sortOrder })  // 👈 dynamic sorting
         .skip(skip)
         .limit(limit)
