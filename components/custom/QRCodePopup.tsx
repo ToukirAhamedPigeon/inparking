@@ -2,7 +2,9 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import QRCode from 'qrcode'
-
+import NextImage from 'next/image'
+import { motion } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 type QRCodePopupProps = {
   value: string
   logoSrc: string
@@ -89,11 +91,19 @@ export default function QRCodePopup({
     generateQRWithLogo(value, logoSrc, size).then(setQrDataUrl)
   }, [value, logoSrc, size])
 
+  // useEffect(() => {
+  //   if (open) {
+  //     generateQRWithLogo(value, logoSrc, 300).then(setPopupQrDataUrl)
+  //   }
+  // }, [open, value, logoSrc])
+
   useEffect(() => {
-    if (open) {
-      generateQRWithLogo(value, logoSrc, 300).then(setPopupQrDataUrl)
-    }
-  }, [open, value, logoSrc])
+    setQrDataUrl(null)
+    setPopupQrDataUrl(null)
+  
+    generateQRWithLogo(value, logoSrc, size).then(setQrDataUrl)
+    generateQRWithLogo(value, logoSrc, 300).then(setPopupQrDataUrl)
+  }, [value, logoSrc, size])
 
   const handlePrint = () => {
     if (!popupQrDataUrl) return
@@ -132,8 +142,8 @@ export default function QRCodePopup({
     printWindow.print()
     printWindow.close()
   }
-
   return (
+    
     <>
       {/* Thumbnail QR in List */}
       <div
@@ -141,7 +151,7 @@ export default function QRCodePopup({
         onClick={() => setOpen(true)}
       >
         {qrDataUrl && (
-          <img
+          <NextImage
             src={qrDataUrl}
             alt="QR Code"
             width={size}
@@ -152,33 +162,48 @@ export default function QRCodePopup({
       </div>
 
       {/* Modal QR */}
-      {open && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-70 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg flex flex-col items-center">
-            {popupQrDataUrl && (
-              <img
-                src={popupQrDataUrl}
-                alt="Popup QR"
-                width={300}
-                height={300}
-              />
-            )}
-            <p className='text-center font-bold'><span className='font-medium'>QR Code Number:</span> {value}</p>
-            <button
-              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-              onClick={handlePrint}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            className="fixed inset-0 z-50 bg-black bg-opacity-70 flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="bg-white p-6 rounded-lg flex flex-col items-center"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
             >
-              Print QR Code
-            </button>
-            <button
-              className="mt-2 text-sm text-gray-600 hover:underline"
-              onClick={() => setOpen(false)}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+              {popupQrDataUrl && (
+                <NextImage
+                  src={popupQrDataUrl}
+                  alt="Popup QR"
+                  width={300}
+                  height={300}
+                />
+              )}
+              <p className='text-center font-bold mt-4'>
+                <span className='font-medium'>QR Code Number:</span> {value}
+              </p>
+              <button
+                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                onClick={handlePrint}
+              >
+                Print QR Code
+              </button>
+              <button
+                className="mt-2 text-sm text-gray-600 hover:underline"
+                onClick={() => setOpen(false)}
+              >
+                Close
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   )
 }
