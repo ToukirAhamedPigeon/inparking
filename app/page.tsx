@@ -1,20 +1,23 @@
 'use client'
 
-import { motion, AnimatePresence } from 'framer-motion'
-import Image from 'next/image'
 import { useRef, useState } from 'react'
-import { Button } from '@/components/ui/button'
 import { useMediaQuery } from 'usehooks-ts'
-import { Input } from "@/components/ui/input"
-import QrScanner from '@/components/custom/QRCodeScanner'
-import Footer from '@/components/custom/Footer'
+import InputSection from '@/components/module/public/homepage/InputSection'
+import HeroSection from '@/components/module/public/homepage/HeroSection'
+import CarAnimation from '@/components/module/public/homepage/CarAnimation'
+import NavigateButton from '@/components/module/public/homepage/NavigateButton'
+import FooterSection from '@/components/module/public/homepage/FooterSection'
+import { IAllotment } from '@/types'
+import api from '@/lib/axios'
+import AllotmentSection from '@/components/module/public/homepage/AllotmentSection'
 
 export default function HomePage() {
   const inputRef = useRef<HTMLDivElement>(null)
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const [showInput, setShowInput] = useState(false)
-  const [qrCode, setQrCode] = useState("")
   const [showScanner, setShowScanner] = useState(true)
+  const [selectedAllotment, setSelectedAllotment] = useState<IAllotment | null>(null)
+  const [errorMessage, setErrorMessage] = useState("")
 
   const handleScroll = () => {
     setShowInput(true)
@@ -26,117 +29,61 @@ export default function HomePage() {
   }
 
   const handleScan = (value: string) => {
-    setQrCode(value)
     setShowScanner(false)
+    fetchAllotment(value) // Automatically trigger submit with scanned QR code
+  }
+
+  const handleSubmit = (value: string) => {
+    setShowScanner(false)
+    fetchAllotment(value)
+  }
+
+  const fetchAllotment = async (code: string) => {
+    setErrorMessage("")
+    setSelectedAllotment(null)
+
+    try {
+      const res = await api.get(`/showAllotments?dateTimeFormatId=${code}`)
+      const data = res.data
+      console.log(data)
+      if (!res || !data || !data.success || !data.allotment) {
+        setErrorMessage("Invalid QR Code. Please scan again.")
+      }
+      setSelectedAllotment(data.allotment)
+    } catch (err) {
+      setErrorMessage("Invalid QR Code. Please scan again.")
+    }
   }
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex flex-col items-center justify-center px-4">
-      <motion.h1
-        className="text-5xl md:text-6xl font-bold text-blue-700 text-center mb-4"
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8 }}
-      >
-        <span className='text-[30px]'>Welcome to</span><br /> <span className='text-red-500'>In-Parking</span>
-      </motion.h1>
+      <HeroSection />
+      <CarAnimation />
+      <NavigateButton onClick={handleScroll} />
+      
+      {/* QR Code input section */}
+      <InputSection 
+        showInput={showInput} 
+        inputRef={inputRef as React.RefObject<HTMLDivElement>}
+        showScanner={showScanner}
+        onScan={handleScan}
+        onSubmit={handleSubmit}
+        onRetry={() => setShowScanner(true)}
+      />
 
-      <motion.p
-        className="text-xl text-gray-600 text-center mb-8 max-w-xl"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3, duration: 1.2, ease: "easeInOut" }}
-      >
-        Smart, secure, and efficient indoor car parking guiding system. Navigate your lot with ease.
-      </motion.p>
+      {/* Error Message */}
+      {errorMessage && (
+        <div className="mt-6 text-red-600 font-semibold text-center animate-pulse">
+          {errorMessage}
+        </div>
+      )}
 
-      <motion.div
-        className="w-[300px] md:w-[400px] mb-10"
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 0.6, duration: 0.8 }}
-      >
-        <Image
-          src="/assets/car-animation.gif"
-          alt="Animated Cartoon Car"
-          width={150}
-          height={150}
-          className="mx-auto"
-        />
-      </motion.div>
+      {/* Allotment Table */}
+      {selectedAllotment && (
+        <AllotmentSection allotment={selectedAllotment} />
+      )}
 
-      <motion.div
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 1, duration: 0.6 }}
-      >
-        <Button
-          className="text-lg px-6 py-4 rounded-xl shadow-md hover:shadow-lg transition"
-          onClick={handleScroll}
-        >
-          Navigate to Parking Lot
-        </Button>
-      </motion.div>
-      <div className='w-full min-h-[200px]'>
-      <AnimatePresence>
-        {showInput && (
-          <motion.div
-            key="inputSection"
-            ref={inputRef}
-            className="mt-16 w-full flex justify-center items-center mb-[20px]"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 30 }}
-            transition={{ duration: 1.2, ease: "easeInOut" }}
-          >
-            <motion.div
-              className="w-full max-w-md bg-white p-6 rounded-xl shadow-xl flex flex-col items-center space-y-4"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              transition={{ duration: 1.2, ease: "easeInOut" }}
-            >
-              {showScanner && (
-                <div className="w-full text-center text-sm text-gray-500">
-                  <p className="mb-2">Scan QR Code to Find Your Spot</p>
-                  <div style={{ maxHeight: '250px', overflow: 'hidden' }}>
-                    <QrScanner onScan={handleScan} />
-                  </div>
-                </div>
-              )}
-
-              {!showScanner && (
-                <Button
-                  onClick={() => setShowScanner(true)}
-                  className="text-sm px-4 py-2 mt-2"
-                >
-                  Scan Again
-                </Button>
-              )}
-
-              <div className="w-full">
-                <label className="block text-gray-700 font-semibold mb-2 text-center">
-                  {isDesktop ? 'Enter QR Code Number' : 'Or enter QR Code Number'}
-                </label>
-                <Input
-                  type="text"
-                  placeholder="Enter code here"
-                  className="w-full"
-                  value={qrCode}
-                  onChange={(e) => setQrCode(e.target.value)}
-                />
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-      </div>
-      <motion.div
-        className="w-[300px] md:w-[400px] mb-10"
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 1.5, duration: 0.8 }}
-      ><Footer footerClasses="bottom-0 w-full py-4 text-center text-xs text-gray-600  overflow-hidden" linkClasses="text-red-600 hover:underline" showVersion={false} /></motion.div>
+      <FooterSection />
     </main>
   )
 }
