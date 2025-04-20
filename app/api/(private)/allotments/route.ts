@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import dbConnect from '@/lib/dbConnect'
 import jwt from 'jsonwebtoken'
 import Allotment from '@/models/Allotment'
+import '@/models/Slot'
+import '@/models/Zone'
 import { IAllotment } from '@/types'
 export async function GET(req: NextRequest) {
   const authHeader = req.headers.get('authorization')
@@ -45,23 +47,11 @@ export async function GET(req: NextRequest) {
 
     const [allotments, totalCount] = await Promise.all([
       Allotment.find(searchQuery)
-          .populate([
-            { path: 'slotId', populate: [
-                { path: 'images' }, // Images related to the slot
-                { path: 'createdBy' }, // CreatedBy user related to the slot
-                { path: 'updatedBy' }, // UpdatedBy user related to the slot
-              ]
-            },
-            { path: 'zoneId', populate: [
-              { path: 'images' }, // Images related to the slot
-              { path: 'createdBy' }, // CreatedBy user related to the slot
-              { path: 'updatedBy' }, // UpdatedBy user related to the slot
-            ]
-          }, // Zone directly on allotment
-            { path: 'createdBy' }, // CreatedBy directly on allotment
-            { path: 'updatedBy' }  // UpdatedBy directly on allotment
-          ])
-        .sort({ [sortBy]: sortOrder })  // 👈 dynamic sorting
+          .populate('zoneId')
+          .populate('slotId')
+          .populate('createdBy')
+          .populate('updatedBy')
+          .sort({ [sortBy]: sortOrder })  // 👈 dynamic sorting
         .skip(skip)
         .limit(limit)
         .lean<IAllotment[]>(),

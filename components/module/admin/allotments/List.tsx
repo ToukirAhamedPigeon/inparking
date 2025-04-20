@@ -19,6 +19,9 @@ import { exportExcel } from '@/lib/helpers'
 import { Badge } from '@/components/ui/badge'
 import api from '@/lib/axios'
 import EditAllotmentForm from './Edit'
+import Fancybox from '@/components/custom/FancyBox'
+import QRWithLogo from '@/components/custom/QRCodeWithLogo'
+import QRCodePopup from '@/components/custom/QRCodePopup'
 
 export default function AllotmentListTable() {
   //Router Hook
@@ -84,6 +87,18 @@ export default function AllotmentListTable() {
           onEdit={() => handleEditClick(row.original)}
           onDelete={() => confirmDelete(row.original._id.toString())}
         />
+      ),
+    },
+    {
+      header: 'QR Code',
+      cell: ({ row }) => (
+        <div className="flex justify-center items-center">
+          <QRCodePopup
+            value={row.original._id.toString()}
+            logoSrc="/icons/icon-512x512.png"
+            size={100}
+          />
+        </div>
       ),
     },
     {
