@@ -24,7 +24,6 @@ export default function QRWithLogo({
       <QRCodeCanvas
         value={value}
         size={size}
-        includeMargin
         level="H" // High error correction to allow for logo overlay
         style={{ width: size, height: size }}
       />

@@ -9,6 +9,7 @@ export const exportExcel = ({data, fileName, sheetName}: {data: any, fileName: s
   }
 
 export const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
+export const twoDigitRandomNumber = Math.floor(Math.random() * 90) + 10;
 
  export function omitFields<T extends Record<string, any>>(obj: T, fields: string[]): Partial<T> {
     const result = { ...obj }

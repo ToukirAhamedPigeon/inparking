@@ -19,8 +19,6 @@ import { exportExcel } from '@/lib/helpers'
 import { Badge } from '@/components/ui/badge'
 import api from '@/lib/axios'
 import EditAllotmentForm from './Edit'
-import Fancybox from '@/components/custom/FancyBox'
-import QRWithLogo from '@/components/custom/QRCodeWithLogo'
 import QRCodePopup from '@/components/custom/QRCodePopup'
 
 export default function AllotmentListTable() {
@@ -47,7 +45,7 @@ export default function AllotmentListTable() {
           sortOrder: sortOrder || 'desc',
         },
       })
-  
+      console.log(res.data.allotments)
       return {
         data: res.data.allotments as IAllotment[],
         total: res.data.totalCount,
@@ -90,13 +88,13 @@ export default function AllotmentListTable() {
       ),
     },
     {
-      header: 'QR Code',
-      cell: ({ row }) => (
+      header: 'Qr Code',
+      accessorKey: 'dateTimeFormatId',
+      cell: ({ getValue }) => (
         <div className="flex justify-center items-center">
           <QRCodePopup
-            value={row.original._id.toString()}
+            value={getValue()?.toString() || ''}
             logoSrc="/icons/icon-512x512.png"
-            size={100}
           />
         </div>
       ),

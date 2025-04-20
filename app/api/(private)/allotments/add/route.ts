@@ -4,7 +4,7 @@ import { EActionType} from '@/types'
 import { logAction } from '@/lib/logger'
 import jwt from 'jsonwebtoken'
 import { getCreatedAtId } from '@/lib/formatDate'
-import { omitFields } from '@/lib/helpers'
+import { omitFields, twoDigitRandomNumber } from '@/lib/helpers'
 import Allotment from '@/models/Allotment'
 import { getAuthUserIdFromCookie } from '@/lib/getAuthUser'
 
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
           const slotId = formData.get('slotId') as string
           const zoneId = formData.get('zoneId') as string
           const qrString = slotId+zoneId+allotmentFrom+allotmentTo
-          const dateTimeFormatId = getCreatedAtId(new Date(formData.get('dateTimeFormatId') as string)) as number
+          const dateTimeFormatId = twoDigitRandomNumber.toString()
           const createdBy = authUserId
           const updatedBy = authUserId
 
@@ -63,7 +63,7 @@ export async function POST(req: Request) {
             createdBy,
             updatedBy,
           })
-          await Allotment.findByIdAndUpdate(allotment._id, { dateTimeFormatId: getCreatedAtId(allotment.createdAt) }, { new: true, strict: false })
+          await Allotment.findByIdAndUpdate(allotment._id, { dateTimeFormatId: parseInt(twoDigitRandomNumber.toString()+getCreatedAtId(allotment.createdAt)+twoDigitRandomNumber.toString()) }, { new: true, strict: false })
           // Log action
           await logAction({
             detail: `Allotment created: ${allotment.guestName}`,

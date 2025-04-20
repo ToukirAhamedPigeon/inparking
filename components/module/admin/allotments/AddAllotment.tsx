@@ -218,7 +218,15 @@ export default function AddAllotment({ allotmentData }: { allotmentData?: IAllot
                 name="allotmentFrom"
                 render={({ field }) => (
                   <DateTimePicker
-                    selectedDate={field.value ? new Date(field.value) : new Date()}
+                  selectedDate={
+                    field.value
+                      ? new Date(field.value)
+                      : (() => {
+                          const now = new Date();
+                          now.setHours(0, 0, 0, 0); // Set to 23:59:00
+                          return now;
+                        })()
+                  }
                     onChange={(date) => field.onChange(date?.toString())}
                     className="w-full"
                   />
