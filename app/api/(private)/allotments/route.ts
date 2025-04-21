@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken'
 import Allotment from '@/models/Allotment'
 import '@/models/Slot'
 import '@/models/Zone'
+import '@/models/User'
 import { IAllotment } from '@/types'
 export async function GET(req: NextRequest) {
   const authHeader = req.headers.get('authorization')
