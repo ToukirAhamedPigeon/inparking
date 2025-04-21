@@ -59,15 +59,12 @@ export default function RouteMapButtons({routeImages}:{routeImages:IImage[]}) {
      title="Route Gallery"
    >
      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-       {routeImages.map((img, index) => (
          <Fancybox
-           key={index}
-           mode="group" 
-           slides={[{src: img.imageUrl, title: img.imageTitle, description: img.imageDetail}]}
-           openIndex={index}
+           mode="group"
+           openIndex={0}
+           slides={routeImages.map((img) => ({src: img.imageUrl, title: img.imageTitle, description: img.imageDetail}))}
            onClose={() => setShowImageModal(false)}
          />
-         ))}
             </div>
         </Modal>
         </>
