@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import Allotment from '@/models/Allotment'
 import { omitFields } from '@/lib/helpers';
 import Route from '@/models/Route';
-import Zone from '@/models/Zone';
+import '@/models/Zone';
+import '@/models/Slot';
 import { Types } from 'mongoose';
-import { EModelType, IAllotment, IRoute } from '@/types';
+import { EModelType, IAllotment, IRoute, ISlot, IZone } from '@/types';
 import Image from '@/models/Image';
+import dbConnect from '@/lib/dbConnect';
 
 export async function GET(req: NextRequest) {
   try {
@@ -14,11 +16,12 @@ export async function GET(req: NextRequest) {
     if (!dateTimeFormatId) {
       return NextResponse.json({ success: false, message: 'dateTimeFormatId is required' }, { status: 400 })
     }
+    await dbConnect()
     const query = { dateTimeFormatId: parseInt(dateTimeFormatId) }
     const allotment = await Allotment.findOne(query)
     .populate('zoneId')
     .populate('slotId')
-    .lean() as (IAllotment & { zoneId: any }) | null
+    .lean() as (IAllotment & { zoneId: IZone, slotId: ISlot }) | null
     if (!allotment) {   
       return NextResponse.json({ success: false, message: 'Allotment not found' }, { status: 404 })
     }
@@ -30,7 +33,7 @@ export async function GET(req: NextRequest) {
       modelType: EModelType.ROUTE,
       modelId: { $in: routeIds },
     }).lean()
-    console.log('routeImages',routeImages)
+    // console.log('routeImages',routeImages)
     const formattedAllotment = omitFields(allotment, ['_id', 'createdAt', 'updatedAt'])
 
       return NextResponse.json({ success: true, allotment: formattedAllotment, routes, routeImages })

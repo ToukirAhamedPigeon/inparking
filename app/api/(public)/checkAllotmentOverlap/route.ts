@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Allotment from '@/models/Allotment'
+import dbConnect from '@/lib/dbConnect'
+import Route from '@/models/Route';
+import Zone from '@/models/Zone';
+import Slot from '@/models/Slot';
 import { startOfDay } from 'date-fns'
 import { endOfDay } from 'date-fns'
 
@@ -13,6 +17,7 @@ export async function POST(req: NextRequest) {
       slotId,
       exceptField = '_id', exceptValue,
     } = body
+    await dbConnect()
     const query: any = { slotId,
         $or: [
         {

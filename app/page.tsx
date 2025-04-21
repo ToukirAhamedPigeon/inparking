@@ -44,7 +44,7 @@ export default function HomePage() {
     setSelectedAllotment(null)
 
     try {
-      const res = await api.get(`/showAllotments?dateTimeFormatId=${code}`)
+      const res = await api.get(`/showAllotment?dateTimeFormatId=${code}`)
       const data = res.data
       console.log(data)
       if (!res || !data || !data.success || !data.allotment) {
