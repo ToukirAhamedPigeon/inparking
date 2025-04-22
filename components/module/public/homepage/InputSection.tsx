@@ -4,7 +4,7 @@ import { useMediaQuery } from 'usehooks-ts'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import QrScanner from '@/components/custom/QRCodeScanner'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function InputSection({ showInput, inputRef, showScanner, onScan, onSubmit, onRetry, initialValue }: {
   showInput: boolean,
@@ -23,7 +23,10 @@ export default function InputSection({ showInput, inputRef, showScanner, onScan,
       onSubmit(inputValue.trim())
     }
   }
-  console.log('Initial Value passed to InputSection:', initialValue)
+  useEffect(() => {
+    console.log('Initial Value passed to InputSection:', initialValue)
+    setInputValue(initialValue)
+  }, [initialValue])
 
   return (
     <div className='w-full min-h-[200px]'>
