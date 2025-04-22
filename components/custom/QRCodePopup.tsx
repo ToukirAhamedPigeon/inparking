@@ -19,14 +19,14 @@ export default function QRCodePopup({
   const [open, setOpen] = useState(false)
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null)
   const [popupQrDataUrl, setPopupQrDataUrl] = useState<string | null>(null)
-
+  console.log(process.env.NEXT_PUBLIC_APP_URL)
   // Generate QR image with logo merged in canvas
   const generateQRWithLogo = async (
     value: string,
     logo: string,
     size: number
   ): Promise<string> => {
-    const qrData = await QRCode.toDataURL(value, {
+    const qrData = await QRCode.toDataURL(process.env.NEXT_PUBLIC_APP_URL + '?qrid=' +value, {
       errorCorrectionLevel: 'H',
       margin: 1,
       width: size,
