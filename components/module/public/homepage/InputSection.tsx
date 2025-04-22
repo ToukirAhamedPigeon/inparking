@@ -23,6 +23,7 @@ export default function InputSection({ showInput, inputRef, showScanner, onScan,
       onSubmit(inputValue.trim())
     }
   }
+  console.log('Initial Value passed to InputSection:', initialValue)
 
   return (
     <div className='w-full min-h-[200px]'>
