@@ -9,17 +9,22 @@ type QRCodePopupProps = {
   value: string
   logoSrc: string
   size?: number
+  expiry?: string
+  guestName?: string
+  siteUrl?: string
 }
 
 export default function QRCodePopup({
   value,
   logoSrc,
   size = 150,
+  expiry,
+  guestName,
+  siteUrl,
 }: QRCodePopupProps) {
   const [open, setOpen] = useState(false)
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null)
   const [popupQrDataUrl, setPopupQrDataUrl] = useState<string | null>(null)
-  console.log(process.env.NEXT_PUBLIC_APP_URL)
   // Generate QR image with logo merged in canvas
   const generateQRWithLogo = async (
     value: string,
@@ -133,6 +138,9 @@ export default function QRCodePopup({
           </div>
           <div style="text-align: center; width: 100%;">
             <p style="text-align:center; font-size: 20px; font-weight: bold;"><span style="font-weight: medium;">QR Code Number:</span> ${value}</p>
+            ${expiry && `<p style="text-align:center; font-size: 12px; font-weight: bold;"><span style="font-weight: medium;">QR Code Expiry:</span> <span style="font-size: 12px;">${expiry}</span></p>`}
+            ${guestName && `<p style="text-align:center; font-size: 12px; font-weight: bold;"><span style="font-weight: medium;">Guest:</span> <span style="font-size: 12px;">${guestName}</span> </p>`}
+            ${siteUrl && `<p style="text-align:center; font-size: 12px; font-weight: bold;"><span style="font-weight: medium;">Site:</span> <span style="font-size: 12px;">${siteUrl}</span></p>`}
           </div>
         </body>
       </html>
@@ -187,6 +195,10 @@ export default function QRCodePopup({
               )}
               <p className='text-center font-bold mt-4'>
                 <span className='font-medium'>QR Code Number:</span> {value}
+                
+                {expiry && <><br /><span className='font-medium text-[12px]'>QR Code Expiry:</span> <span className='text-[12px]'>{expiry}</span></>}
+                {guestName && <><br /><span className='font-medium text-[12px]'>Guest:</span> <span className='text-[12px]'>{guestName}</span></>}
+                {siteUrl && <><br /><span className='font-medium text-[12px]'>Site:</span> <span className='text-[12px]'>{siteUrl}</span></>}
               </p>
               <button
                 className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"

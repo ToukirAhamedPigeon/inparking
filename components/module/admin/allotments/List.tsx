@@ -14,7 +14,7 @@ import Modal from '@/components/custom/Modal'
 import ConfirmDialog from '@/components/custom/ConfirmDialog'
 import AllotmentDetail from './AllotmentDetail'
 import {RowActions,IndexCell,TableHeaderActions,TablePaginationFooter,TableLoader} from '@/components/custom/Table'
-import { formatDateTime } from '@/lib/formatDate'
+import { formatDateTime, formatDateTimeDisplay } from '@/lib/formatDate'
 import { exportExcel } from '@/lib/helpers'
 import { Badge } from '@/components/ui/badge'
 import api from '@/lib/axios'
@@ -90,11 +90,14 @@ export default function AllotmentListTable() {
     {
       header: 'Qr Code',
       accessorKey: 'dateTimeFormatId',
-      cell: ({ getValue }) => (
+      cell: ({ row }) => (
         <div className="flex justify-center items-center">
           <QRCodePopup
-            value={getValue()?.toString() || ''}
+            value={row.original?.dateTimeFormatId?.toString() || ''}
             logoSrc="/icons/icon-512x512.png"
+            expiry={row.original?.allotmentTo ? formatDateTimeDisplay(row.original?.allotmentTo.toString()) : ''}
+            guestName={row.original?.guestName}
+            siteUrl={process.env.NEXT_PUBLIC_APP_URL}
           />
         </div>
       ),
