@@ -1,5 +1,6 @@
 'use client'
 
+import { Suspense } from 'react'
 import { useRef, useState, useEffect } from 'react'
 import { useMediaQuery } from 'usehooks-ts'
 import InputSection from '@/components/module/public/homepage/InputSection'
@@ -84,15 +85,17 @@ export default function HomePage() {
       <NavigateButton onClick={handleScroll} />
       
       {/* QR Code input section */}
-      <InputSection 
-        showInput={showInput} 
-        inputRef={inputRef as React.RefObject<HTMLDivElement>}
-        showScanner={showScanner}
-        onScan={handleScan}
-        onSubmit={handleSubmit}
-        onRetry={() => setShowScanner(true)}
-        initialValue={refinedQrid}
-      />
+      <Suspense fallback={<div>Loading...</div>}>
+        <InputSection 
+          showInput={showInput} 
+          inputRef={inputRef as React.RefObject<HTMLDivElement>}
+          showScanner={showScanner}
+          onScan={handleScan}
+          onSubmit={handleSubmit}
+          onRetry={() => setShowScanner(true)}
+          initialValue={refinedQrid}
+        />
+      </Suspense>
 
       {/* Error Message */}
       {errorMessage && (
