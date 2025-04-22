@@ -6,16 +6,17 @@ import { Input } from '@/components/ui/input'
 import QrScanner from '@/components/custom/QRCodeScanner'
 import { useState } from 'react'
 
-export default function InputSection({ showInput, inputRef, showScanner, onScan, onSubmit, onRetry }: {
+export default function InputSection({ showInput, inputRef, showScanner, onScan, onSubmit, onRetry, initialValue }: {
   showInput: boolean,
   inputRef: React.RefObject<HTMLDivElement>,
   showScanner: boolean,
   onScan: (val: string) => void,
   onSubmit: (val: string) => void,
-  onRetry: () => void
+  onRetry: () => void,
+  initialValue: string
 }) {
   const isDesktop = useMediaQuery('(min-width: 1024px)')
-  const [inputValue, setInputValue] = useState("")
+  const [inputValue, setInputValue] = useState(initialValue)
 
   const handleSubmit = () => {
     if (inputValue.trim()) {
@@ -47,7 +48,14 @@ export default function InputSection({ showInput, inputRef, showScanner, onScan,
                 <div className="w-full text-center text-sm text-gray-500">
                   <p className="mb-2">Scan QR Code to Find Your Spot</p>
                   <div style={{ maxHeight: '250px', overflow: 'hidden' }}>
-                    <QrScanner onScan={(val) => {onScan(val); setInputValue(val)}} />
+                  <QrScanner
+                      onScan={(val) => {
+                        // console.log(val)
+                        const qrid = new URL(val).searchParams.get('qrid');
+                        onScan(qrid || '');
+                        setInputValue(qrid || '');
+                      }}
+                    />
                   </div>
                 </div>
               )}

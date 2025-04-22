@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { useMediaQuery } from 'usehooks-ts'
 import InputSection from '@/components/module/public/homepage/InputSection'
 import HeroSection from '@/components/module/public/homepage/HeroSection'
@@ -10,10 +10,10 @@ import FooterSection from '@/components/module/public/homepage/FooterSection'
 import { IAllotment, IImage } from '@/types'
 import api from '@/lib/axios'
 import AllotmentSection from '@/components/module/public/homepage/AllotmentSection'
+import { useSearchParams } from 'next/navigation'
 
 export default function HomePage() {
   const inputRef = useRef<HTMLDivElement>(null)
-  const isDesktop = useMediaQuery('(min-width: 1024px)')
   const [showInput, setShowInput] = useState(false)
   const [showScanner, setShowScanner] = useState(true)
   const [selectedAllotment, setSelectedAllotment] = useState<IAllotment | null>(null)
@@ -21,14 +21,30 @@ export default function HomePage() {
   const [zoneImages, setZoneImages] = useState<IImage[]>([])
   const [slotImages, setSlotImages] = useState<IImage[]>([])
   const [errorMessage, setErrorMessage] = useState("")
+  const searchParams = useSearchParams()
+  const qrid = searchParams.get("qrid")
+  const refinedQrid = qrid?.replace(/^.*[?&]qrid=|[^a-zA-Z0-9]/g, '') || ''
 
-  const handleScroll = () => {
+  useEffect(() => {
+    if (refinedQrid) {
+      setShowScanner(false)
+      fetchAllotment(refinedQrid)
+  
+      // Scroll to input section if on mobile
+      handleScroll(350,300)
+    }
+  }, [searchParams])
+
+  const handleScroll = (top: number=400,seconds: number=100) => {
     setShowInput(true)
     setTimeout(() => {
-      if (!isDesktop && inputRef.current) {
-        inputRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      if (inputRef.current) {
+        inputRef.current.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
+        setTimeout(() => {
+          window.scrollBy({ top: top, behavior: 'smooth' }) // adjust '100' as needed
+        }, 400)
       }
-    }, 100)
+    }, seconds)
   }
 
   const handleScan = (value: string) => {
@@ -48,15 +64,16 @@ export default function HomePage() {
     try {
       const res = await api.get(`/showAllotment?dateTimeFormatId=${code}`)
       const data = res.data
-      if (!res || !data || !data.success || !data.allotment) {
-        setErrorMessage("Invalid QR Code. Please scan again.")
+      if ((!res || !data || !data.success || !data.allotment) && res.status !== 404) {
+          setErrorMessage(res.data.message)
+          return
       }
       setSelectedAllotment(data.allotment)
       setRouteImages(data.routeImages)
       setZoneImages(data.zoneImages)
       setSlotImages(data.slotImages)
     } catch (err) {
-      setErrorMessage("Invalid QR Code. Please scan again.")
+      setErrorMessage((err as any).response.data.message)
     }
   }
 
@@ -74,6 +91,7 @@ export default function HomePage() {
         onScan={handleScan}
         onSubmit={handleSubmit}
         onRetry={() => setShowScanner(true)}
+        initialValue={refinedQrid}
       />
 
       {/* Error Message */}

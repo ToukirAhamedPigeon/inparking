@@ -23,7 +23,14 @@ export async function GET(req: NextRequest) {
     .populate('slotId')
     .lean() as (IAllotment & { zoneId: IZone, slotId: ISlot }) | null
     if (!allotment) {   
-      return NextResponse.json({ success: false, message: 'Allotment not found' }, { status: 404 })
+      return NextResponse.json({ success: false, message: 'Invalid QR Code. Please scan again.' }, { status: 404 })
+    }
+    // Compare today's date with allotmentTo
+    const now = new Date()
+    const expiry = new Date(allotment.allotmentTo)
+
+    if (now > expiry) {
+      return NextResponse.json({ success: false, message: 'QR Code has expired' }, { status: 410 }) // 410 Gone
     }
     const zoneId = (allotment.zoneId as any)?._id ?? allotment.zoneId
     if (!zoneId) throw new Error('zoneId not found on allotment')

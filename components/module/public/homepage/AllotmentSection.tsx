@@ -9,10 +9,6 @@ import Image from 'next/image';
 import ShowImageModal from './ShowImageModal';
 
 export default function AllotmentSection({allotment, routeImages, zoneImages, slotImages}: {allotment: IAllotment, routeImages: IImage[], zoneImages: IImage[], slotImages: IImage[]}){
-    console.log(allotment)
-    console.log(routeImages)
-    console.log(zoneImages)
-    console.log(slotImages)
     return (
         <motion.div
           className="mt-10 w-full max-w-4xl bg-gradient-to-br from-blue-100 via-white to-blue-100 rounded-xl shadow-lg p-6"
