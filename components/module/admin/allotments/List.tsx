@@ -89,7 +89,7 @@ export default function AllotmentListTable() {
     },
     {
       header: 'Qr Code',
-      accessorKey: 'dateTimeFormatId',
+      id: 'qr-code-display',
       cell: ({ row }) => (
         <div className="flex justify-center items-center">
           <QRCodePopup
@@ -101,6 +101,10 @@ export default function AllotmentListTable() {
           />
         </div>
       ),
+    },
+    {
+      header: 'Qr Code Number',
+      accessorKey: 'dateTimeFormatId',
     },
     {
       header: 'Slot',
