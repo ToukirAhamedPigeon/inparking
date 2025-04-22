@@ -79,23 +79,23 @@ export default function HomePage() {
   }
 
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <main className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex flex-col items-center justify-center px-4">
       <HeroSection />
       <CarAnimation />
       <NavigateButton onClick={handleScroll} />
       
       {/* QR Code input section */}
-      <Suspense fallback={<div>Loading...</div>}>
+      
         <InputSection 
           showInput={showInput} 
           inputRef={inputRef as React.RefObject<HTMLDivElement>}
-          showScanner={showScanner}
-          onScan={handleScan}
+            showScanner={showScanner}
+           onScan={handleScan}
           onSubmit={handleSubmit}
           onRetry={() => setShowScanner(true)}
           initialValue={refinedQrid}
         />
-      </Suspense>
 
       {/* Error Message */}
       {errorMessage && (
@@ -111,5 +111,6 @@ export default function HomePage() {
 
       <FooterSection />
     </main>
+    </Suspense>
   )
 }
