@@ -22,18 +22,19 @@ const schema = z.object({
   description: z.string().optional(),
   isActive: z.boolean().optional(),
   images: z
-    .array(
-      z.object({
-        id: z.string().optional(),
-        image: z
-          .custom<File | string>((val) => val instanceof File || typeof val === 'string', {
-            message: 'Image is required',
-          }),
-        title: z.string().optional(),
-        description: z.string().optional(),
-      })
-    )
-    .min(1, 'At least one image is required'),
+  .array(
+    z.object({
+      image: z
+        .custom<File | string>((val) => val instanceof File || typeof val === 'string', {
+          message: 'Image is required',
+        }),
+      title: z.string().optional(),
+      description: z.string().optional(),
+    })
+  )
+  .refine((val) => val.length === 0 || val.every((img) => img.image), {
+    message: 'Image is required for each image entry',
+  }),
 })
 
 type FormData = z.infer<typeof schema>
