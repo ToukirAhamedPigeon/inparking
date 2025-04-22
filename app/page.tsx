@@ -18,6 +18,8 @@ export default function HomePage() {
   const [showScanner, setShowScanner] = useState(true)
   const [selectedAllotment, setSelectedAllotment] = useState<IAllotment | null>(null)
   const [routeImages, setRouteImages] = useState<IImage[]>([])
+  const [zoneImages, setZoneImages] = useState<IImage[]>([])
+  const [slotImages, setSlotImages] = useState<IImage[]>([])
   const [errorMessage, setErrorMessage] = useState("")
 
   const handleScroll = () => {
@@ -46,12 +48,13 @@ export default function HomePage() {
     try {
       const res = await api.get(`/showAllotment?dateTimeFormatId=${code}`)
       const data = res.data
-      console.log(data)
       if (!res || !data || !data.success || !data.allotment) {
         setErrorMessage("Invalid QR Code. Please scan again.")
       }
       setSelectedAllotment(data.allotment)
       setRouteImages(data.routeImages)
+      setZoneImages(data.zoneImages)
+      setSlotImages(data.slotImages)
     } catch (err) {
       setErrorMessage("Invalid QR Code. Please scan again.")
     }
@@ -82,7 +85,7 @@ export default function HomePage() {
 
       {/* Allotment Table */}
       {selectedAllotment && (
-        <AllotmentSection allotment={selectedAllotment} routeImages={routeImages} />
+        <AllotmentSection allotment={selectedAllotment} routeImages={routeImages} zoneImages={zoneImages} slotImages={slotImages} />
       )}
 
       <FooterSection />

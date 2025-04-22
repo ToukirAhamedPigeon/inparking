@@ -27,16 +27,24 @@ export async function GET(req: NextRequest) {
     }
     const zoneId = (allotment.zoneId as any)?._id ?? allotment.zoneId
     if (!zoneId) throw new Error('zoneId not found on allotment')
-      const routes = await Route.find({ toZoneId: zoneId.toString() }).lean()
+    const routes = await Route.find({ toZoneId: zoneId.toString() }).lean()
     const routeIds = routes.map((route) => route._id)
     const routeImages = await Image.find({
       modelType: EModelType.ROUTE,
       modelId: { $in: routeIds },
     }).lean()
+    const zoneImages = await Image.find({
+      modelType: EModelType.ZONE,
+      modelId: zoneId,
+    }).lean()
+    const slotImages = await Image.find({
+      modelType: EModelType.SLOT,
+      modelId: allotment.slotId,
+    }).lean()
     // console.log('routeImages',routeImages)
     const formattedAllotment = omitFields(allotment, ['_id', 'createdAt', 'updatedAt'])
 
-      return NextResponse.json({ success: true, allotment: formattedAllotment, routes, routeImages })
+      return NextResponse.json({ success: true, allotment: formattedAllotment, routes, routeImages, zoneImages, slotImages })
   } catch (error) {
     console.error('Error in checkAllotmentOverlap API:', error)
     return NextResponse.json(

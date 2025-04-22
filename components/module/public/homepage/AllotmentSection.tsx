@@ -6,9 +6,13 @@ import { IAllotment, IImage } from '@/types';
 import { formatDateTimeDisplay } from '@/lib/formatDate';
 import RouteMapButtons from './RouteMapButtons';
 import Image from 'next/image';
+import ShowImageModal from './ShowImageModal';
 
-export default function AllotmentSection({allotment, routeImages}: {allotment: IAllotment, routeImages: IImage[]}){
+export default function AllotmentSection({allotment, routeImages, zoneImages, slotImages}: {allotment: IAllotment, routeImages: IImage[], zoneImages: IImage[], slotImages: IImage[]}){
     console.log(allotment)
+    console.log(routeImages)
+    console.log(zoneImages)
+    console.log(slotImages)
     return (
         <motion.div
           className="mt-10 w-full max-w-4xl bg-gradient-to-br from-blue-100 via-white to-blue-100 rounded-xl shadow-lg p-6"
@@ -98,7 +102,8 @@ export default function AllotmentSection({allotment, routeImages}: {allotment: I
             </tbody>
             </table>
           </div>
-
+          <ShowImageModal images={zoneImages} title="Zone Images" />
+            
           <h2 className="text-xl font-bold text-center mt-6 mb-4 text-blue-700">Slot Details</h2>
           <div className="overflow-x-auto">
           <table className="min-w-full border border-gray-300 rounded-md">
@@ -113,9 +118,10 @@ export default function AllotmentSection({allotment, routeImages}: {allotment: I
                 </tr>
             </tbody>
             </table>
-            <div className="flex justify-center mt-4">
+          </div>
+          <ShowImageModal images={slotImages} title="Slot Images" />
+          <div className="flex justify-center mt-4">
                 <Image src="/assets/bg_app.png" alt="Slot Image" width={400} height={400} className="h-40 w-auto md:h-[200px] md:w-auto" />
-            </div>
           </div>
         </motion.div>
     );

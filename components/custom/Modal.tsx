@@ -9,9 +9,10 @@ type ModalProps = {
   title: string
   children: React.ReactNode
   titleClassName?: string
+  bgColor?: string
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, titleClassName }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, titleClassName, bgColor="white" }) => {
   if (!isOpen) return null
 
   return (
@@ -28,7 +29,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, titleCl
         animate={{ scale: 1 }}
         exit={{ scale: 0.9 }}
         transition={{ duration: 0.3 }}
-        className="relative bg-gradient-to-t from-[#fdfbfb] via-white to-[#ebedee] p-8 rounded-lg w-full max-w-3xl max-h-[calc(100vh-100px)] overflow-y-auto"
+        className={cn("relative p-8 rounded-lg w-full max-w-3xl max-h-[calc(100vh-100px)] overflow-y-auto", (bgColor=="transparent") ? "bg-transparent" : "bg-gradient-to-t from-[#fdfbfb] via-white to-[#ebedee]")}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close icon (top right) */}
