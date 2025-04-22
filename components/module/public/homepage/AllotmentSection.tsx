@@ -7,6 +7,7 @@ import { formatDateTimeDisplay } from '@/lib/formatDate';
 import RouteMapButtons from './RouteMapButtons';
 import Image from 'next/image';
 import ShowImageModal from './ShowImageModal';
+import { Phone } from 'lucide-react' 
 
 export default function AllotmentSection({allotment, routeImages, zoneImages, slotImages}: {allotment: IAllotment, routeImages: IImage[], zoneImages: IImage[], slotImages: IImage[]}){
     return (
@@ -22,48 +23,63 @@ export default function AllotmentSection({allotment, routeImages, zoneImages, sl
           <table className="min-w-full border border-gray-300 rounded-md">
             <tbody>
                 <tr>
-                <td className="border px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">Zone</td>
-                <td className="border px-2 py-1 text-sm lg:px-4 lg:py-2">{allotment.zoneId.name}</td>
+                <td className="border align-middle px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">Zone</td>
+                <td className="border align-middle px-2 py-1 text-sm lg:px-4 lg:py-2">{allotment.zoneId.name}</td>
                 </tr>
                 <tr>
-                <td className="border px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">Slot</td>
-                <td className="border px-2 py-1 text-sm lg:px-4 lg:py-2">{allotment.slotId.slotNumber}</td>
+                <td className="border align-middle px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">Slot</td>
+                <td className="border align-middle px-2 py-1 text-sm lg:px-4 lg:py-2">{allotment.slotId.slotNumber}</td>
                 </tr>
                 <tr>
-                <td className="border px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">From</td>
-                <td className="border px-2 py-1 text-sm lg:px-4 lg:py-2">{formatDateTimeDisplay(allotment.allotmentFrom.toString())}</td>
+                <td className="border align-middle px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">From</td>
+                <td className="border align-middle px-2 py-1 text-sm lg:px-4 lg:py-2">{formatDateTimeDisplay(allotment.allotmentFrom.toString())}</td>
                 </tr>
                 <tr>
-                <td className="border px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">To</td>
-                <td className="border px-2 py-1 text-sm lg:px-4 lg:py-2">{formatDateTimeDisplay(allotment.allotmentTo.toString())}</td>
+                <td className="border align-middle px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">To</td>
+                <td className="border align-middle px-2 py-1 text-sm lg:px-4 lg:py-2">{formatDateTimeDisplay(allotment.allotmentTo.toString())}</td>
                 </tr>
                 <tr>
-                <td className="border px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">Guest</td>
-                <td className="border px-2 py-1 text-sm lg:px-4 lg:py-2">{allotment.guestName}</td>
+                <td className="border align-middle px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">Guest</td>
+                <td className="border align-middle px-2 py-1 text-sm lg:px-4 lg:py-2">{allotment.guestName}</td>
                 </tr>
                 <tr>
-                <td className="border px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">Guest Phone</td>
-                <td className="border px-2 py-1 text-sm lg:px-4 lg:py-2">{allotment.guestContactNo}</td>
+                <td className="border align-middle px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">Guest Phone</td>
+                <td className="relative align-middle px-2 py-1 text-sm lg:px-4 lg:py-2 flex items-center justify-between gap-2">
+                    {allotment.guestContactNo}
+
+                    {allotment.guestContactNo && (
+                        <a href={`tel:${allotment.guestContactNo}`} className="text-blue-600 hover:text-blue-800" title="Call">
+                            <Phone size={18} className='cursor-pointer' />
+                        </a>
+                    )}
+                </td>
                 </tr>
                 {allotment.guestDetail && allotment.guestDetail.trim().length > 0 && (
                     <tr>
-                        <td className="border px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">About Guest</td>
-                        <td className="border px-2 py-1 text-sm lg:px-4 lg:py-2">{allotment.guestDetail}</td>
+                        <td className="border align-middle px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">About Guest</td>
+                        <td className="border align-middle px-2 py-1 text-sm lg:px-4 lg:py-2">{allotment.guestDetail}</td>
                     </tr>
                 )}
                 {allotment.isOwnerDriver ? (
                     <tr>
-                    <td colSpan={2} className="border px-2 py-1 text-xs lg:px-4 lg:py-2 text-center text-red-500 font-bold">*The guest will be driving.</td>
+                    <td colSpan={2} className="border align-middle px-2 py-1 text-xs lg:px-4 lg:py-2 text-center text-red-500 font-bold">*The guest will be driving.</td>
                     </tr>
                 ) : (
                     <>
                     <tr>
-                        <td className="border px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">Driver</td>
-                        <td className="border px-2 py-1 text-sm lg:px-4 lg:py-2">{allotment.driverName}</td>
+                        <td className="border align-middle px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">Driver</td>
+                        <td className="border align-middle px-2 py-1 text-sm lg:px-4 lg:py-2">{allotment.driverName}</td>
                     </tr>
                     <tr>
-                        <td className="border px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">Driver Phone</td>
-                        <td className="border px-2 py-1 text-sm lg:px-4 lg:py-2">{allotment.driverContactNo}</td>
+                        <td className="border align-middle px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">Driver Phone</td>
+                        <td className="px-2 py-1 align-middle text-sm lg:px-4 lg:py-2 flex items-center justify-between gap-2">
+                            {allotment.driverContactNo}
+                            {allotment.driverContactNo && (
+                                <a href={`tel:${allotment.driverContactNo}`} className="text-blue-600 hover:text-blue-800" title="Call">
+                                    <Phone size={18} className='cursor-pointer' />
+                                </a>
+                            )}
+                        </td>
                     </tr>
                 </>
                 )}
@@ -76,23 +92,30 @@ export default function AllotmentSection({allotment, routeImages, zoneImages, sl
           <table className="min-w-full border border-gray-300 rounded-md">
             <tbody>
                 <tr>
-                <td className="border px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">Zone</td>
-                <td className="border px-2 py-1 text-sm lg:px-4 lg:py-2">{allotment.zoneId.name}</td>
+                <td className="border align-middle px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">Zone</td>
+                <td className="border align-middle px-2 py-1 text-sm lg:px-4 lg:py-2">{allotment.zoneId.name}</td>
                 </tr>
                 <tr>
-                <td className="border px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">Address</td>
-                <td className="border px-2 py-1 text-sm lg:px-4 lg:py-2">{allotment.zoneId.address}</td>
+                <td className="border align-middle px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">Address</td>
+                <td className="border align-middle px-2 py-1 text-sm lg:px-4 lg:py-2">{allotment.zoneId.address}</td>
                 </tr>
                 {allotment.zoneId.contactName && allotment.zoneId.contactName.trim().length > 0 && (
                     <tr>
-                        <td className="border px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">Contact</td>
-                        <td className="border px-2 py-1 text-sm lg:px-4 lg:py-2">{allotment.zoneId.contactName}</td>
+                        <td className="border align-middle px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">Contact</td>
+                        <td className="border align-middle px-2 py-1 text-sm lg:px-4 lg:py-2">{allotment.zoneId.contactName}</td>
                     </tr>
                 )}
                 {allotment.zoneId.contactNo && allotment.zoneId.contactNo.trim().length > 0 && (
                     <tr>
-                        <td className="border px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">Contact No</td>
-                        <td className="border px-2 py-1 text-sm lg:px-4 lg:py-2">{allotment.zoneId.contactNo}</td>
+                        <td className="border align-middle px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">Contact No</td>
+                        <td className="px-2 py-1 align-middle text-sm lg:px-4 lg:py-2 flex items-center justify-between gap-2">
+                            {allotment.zoneId.contactNo}
+                            {allotment.zoneId.contactNo && (
+                                <a href={`tel:${allotment.zoneId.contactNo}`} className="text-blue-600 hover:text-blue-800" title="Call">
+                                    <Phone size={18} className='cursor-pointer' />
+                                </a>
+                            )}
+                        </td>
                     </tr>
                 )}
             </tbody>
@@ -105,12 +128,12 @@ export default function AllotmentSection({allotment, routeImages, zoneImages, sl
           <table className="min-w-full border border-gray-300 rounded-md">
             <tbody>
                 <tr>
-                <td className="border px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">Slot</td>
-                <td className="border px-2 py-1 text-sm lg:px-4 lg:py-2">{allotment.slotId.slotNumber}</td>
+                <td className="border align-middle px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">Slot</td>
+                <td className="border align-middle px-2 py-1 text-sm lg:px-4 lg:py-2">{allotment.slotId.slotNumber}</td>
                 </tr>
                 <tr>
-                <td className="border px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">Detail</td>
-                <td className="border px-2 py-1 text-sm lg:px-4 lg:py-2">{allotment.slotId.slotDetail}</td>
+                <td className="border align-middle px-2 py-1 text-sm font-medium w-[50px] md:w-[160px] lg:px-4 lg:py-2">Detail</td>
+                <td className="border align-middle px-2 py-1 text-sm lg:px-4 lg:py-2">{allotment.slotId.slotDetail}</td>
                 </tr>
             </tbody>
             </table>
